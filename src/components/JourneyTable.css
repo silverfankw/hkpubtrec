@@ -1,0 +1,126 @@
+.filters {
+  display: flex;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.filters .form-field {
+  flex: 1;
+}
+
+.journey-table-wrapper {
+  border-radius: 0.9rem;
+  border: 1px solid #e2e8f0;
+  overflow: auto;
+}
+
+.journey-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 640px;
+}
+
+.journey-table thead {
+  background: linear-gradient(to right, #f9fafb, #eef2ff);
+}
+
+.journey-table th,
+.journey-table td {
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+}
+
+.journey-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+.journey-table th.sortable:hover {
+  background-color: rgba(99, 102, 241, 0.12);
+}
+
+.journey-table th {
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.journey-table tbody tr:nth-child(odd) {
+  background-color: #f8fafc;
+}
+
+.journey-table tbody tr:hover {
+  background-color: #e5edff;
+}
+
+.journey-table-row {
+  cursor: pointer;
+}
+
+.journey-table-row--selected {
+  background-color: #c7d2fe !important;
+}
+
+.journey-table-company-route {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.journey-table-actions-header {
+  width: 2.5rem;
+  text-align: center;
+}
+
+.journey-table-actions-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.journey-table-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #64748b;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+}
+
+.journey-table-remove-btn:hover {
+  color: #dc2626;
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.journey-table .from-to-cell {
+  vertical-align: middle;
+}
+
+.journey-table .from-to-cell-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.5em;
+}
+
+.notes-cell {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .filters {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,108 @@
+.saved-journey-detail-panel {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.saved-journey-summary {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.saved-journey-summary-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1.25rem;
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.saved-journey-summary-grid dt {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.saved-journey-summary-grid dd {
+  margin: 0;
+  color: #0f172a;
+}
+
+.saved-journey-summary-grid dd.from-to-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.saved-journey-summary-grid .saved-journey-notes-cell {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.saved-journey-station-title {
+  margin: 1.25rem 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.saved-station-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.saved-station-list-header,
+.saved-station-list-item {
+  display: grid;
+  grid-template-columns: 2rem 1fr 5.5rem 4rem 4rem 4rem minmax(4rem, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+}
+
+.saved-station-list-header {
+  background: linear-gradient(to right, #f9fafb, #eef2ff);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.saved-station-list-item:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.saved-station-list-item--initial {
+  background-color: #f1f5f9 !important;
+  color: #64748b;
+  font-style: italic;
+}
+
+.saved-station-list-item .station-order {
+  min-width: 1.6rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: #9ca3af;
+}
+
+.saved-station-list-item .station-name {
+  min-width: 0;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saved-station-onboard-cell {
+  text-align: center;
+  color: #475569;
+  font-size: 0.82rem;
+}

@@ -94,13 +94,17 @@ export function StationList({
       </div>
       <ul key={selectedRouteId} className={`station-list station-list--selectable${stops.length === 0 ? ' station-list--empty' : ''}`}>
         <li className="station-list-header">
-          <span className="station-order">#</span>
-          <span className="station-name">{t.stationNameLabel}</span>
-          <span className="station-input-col">{t.arrivalTimeLabel}</span>
-          <span className="station-input-col">{t.aboardingLabel}</span>
-          <span className="station-input-col">{t.alightingLabel}</span>
-          <span className="station-input-col station-onboard-col">{t.onBoardLabel}</span>
-          <span className="station-input-col station-remark-col">{t.remarkLabel}</span>
+          <div className="station-row-main">
+            <span className="station-order">#</span>
+            <span className="station-name">{t.stationNameLabel}</span>
+            <span className="station-input-col">{t.arrivalTimeLabel}</span>
+          </div>
+          <div className="station-row-data">
+            <span className="station-input-col">{t.aboardingLabel}</span>
+            <span className="station-input-col">{t.alightingLabel}</span>
+            <span className="station-input-col station-onboard-col">{t.onBoardLabel}</span>
+            <span className="station-input-col station-remark-col">{t.remarkLabel}</span>
+          </div>
         </li>
         {stops.flatMap((stop) => {
           const isInRange = sel ? stop.order >= start && stop.order <= end : false
@@ -175,65 +179,69 @@ export function StationList({
                   </svg>
                 </span>
               )}
-              <span className="station-order">{stop.order}</span>
-              <span className="station-name">{stop.name}</span>
-              <span className="station-input-col station-time-col">
+              <div className="station-row-main">
+                <span className="station-order">{stop.order}</span>
+                <span className="station-name">{stop.name}</span>
+                <span className="station-input-col station-time-col">
+                  <input
+                    type="time"
+                    className={`station-input ${hasTimeWarning ? 'station-input--warning' : ''}`}
+                    value={data.arrivalTime}
+                    disabled={!canEditInputs}
+                    onChange={(e) =>
+                      onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', e.target.value)
+                    }
+                    onMouseDown={(e) => e.stopPropagation()}
+                  />
+                  {hasTimeWarning && (
+                    <span className="station-time-warning" title={t.timeOrderWarning}>
+                      !
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className={`station-row-data${canEditInputs ? '' : ' station-row-data--inactive'}`}>
                 <input
-                  type="time"
-                  className={`station-input ${hasTimeWarning ? 'station-input--warning' : ''}`}
-                  value={data.arrivalTime}
+                  type="number"
+                  className="station-input"
+                  min={0}
+                  inputMode="numeric"
+                  placeholder="—"
+                  value={data.aboard}
                   disabled={!canEditInputs}
                   onChange={(e) =>
-                    onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', e.target.value)
+                    onUpdateStop(selectedRouteId, stop.order, 'aboard', sanitizeNonNegative(e.target.value))
                   }
                   onMouseDown={(e) => e.stopPropagation()}
                 />
-                {hasTimeWarning && (
-                  <span className="station-time-warning" title={t.timeOrderWarning}>
-                    !
-                  </span>
-                )}
-              </span>
-              <input
-                type="number"
-                className="station-input"
-                min={0}
-                inputMode="numeric"
-                placeholder="—"
-                value={data.aboard}
-                disabled={!canEditInputs}
-                onChange={(e) =>
-                  onUpdateStop(selectedRouteId, stop.order, 'aboard', sanitizeNonNegative(e.target.value))
-                }
-                onMouseDown={(e) => e.stopPropagation()}
-              />
-              <input
-                type="number"
-                className="station-input"
-                min={0}
-                inputMode="numeric"
-                placeholder="—"
-                value={data.alighting}
-                disabled={!canEditInputs}
-                onChange={(e) =>
-                  onUpdateStop(selectedRouteId, stop.order, 'alighting', sanitizeNonNegative(e.target.value))
-                }
-                onMouseDown={(e) => e.stopPropagation()}
-              />
-              <span className="station-onboard-value">
-                {onBoardValue != null ? String(onBoardValue) : '—'}
-              </span>
-              <input
-                type="text"
-                className="station-input station-remark-input"
-                placeholder="—"
-                value={data.remark}
-                disabled={!canEditInputs}
-                onChange={(e) =>
-                  onUpdateStop(selectedRouteId, stop.order, 'remark', e.target.value)
-                }
-                onMouseDown={(e) => e.stopPropagation()}
-              />
+                <input
+                  type="number"
+                  className="station-input"
+                  min={0}
+                  inputMode="numeric"
+                  placeholder="—"
+                  value={data.alighting}
+                  disabled={!canEditInputs}
+                  onChange={(e) =>
+                    onUpdateStop(selectedRouteId, stop.order, 'alighting', sanitizeNonNegative(e.target.value))
+                  }
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
+                <span className="station-onboard-value">
+                  {onBoardValue != null ? String(onBoardValue) : '—'}
+                </span>
+                <input
+                  type="text"
+                  className="station-input station-remark-input"
+                  placeholder="—"
+                  value={data.remark}
+                  disabled={!canEditInputs}
+                  onChange={(e) =>
+                    onUpdateStop(selectedRouteId, stop.order, 'remark', e.target.value)
+                  }
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
+              </div>
             </li>
           )
           return rows

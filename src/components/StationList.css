@@ -164,6 +164,11 @@
   position: relative;
 }
 
+.station-row-main,
+.station-row-data {
+  display: contents;
+}
+
 .station-onboard-col {
   text-align: center;
 }
@@ -371,34 +376,46 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .station-list-header,
+  .station-list-header {
+    display: none;
+  }
+
   .station-list-item {
-    min-width: 460px;
-    grid-template-columns: 2rem minmax(5rem, 1fr) 4.5rem 3rem 3rem 3rem minmax(3rem, 1fr);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    min-width: 0;
+  }
+
+  .station-row-main {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr 5.5rem;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .station-row-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    align-items: center;
     gap: 0.35rem;
-    padding: 0.25rem 0.4rem;
-    font-size: 0.78rem;
+    width: 100%;
+    margin-top: 0.25rem;
+    padding-left: 2.15rem;
+  }
+
+  .station-row-data--inactive {
+    display: none;
+  }
+
+  .station-list-item .station-input {
+    font-size: 0.82rem;
   }
 
   .station-name {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .station-input {
-    min-width: 2.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .station-list-header,
-  .station-list-item {
-    min-width: 420px;
-    grid-template-columns: 1.75rem minmax(4rem, 1fr) 4rem 2.75rem 2.75rem 2.75rem minmax(2.75rem, 1fr);
-    gap: 0.3rem;
-    padding: 0.2rem 0.35rem;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
   }
 }

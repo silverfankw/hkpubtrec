@@ -12,6 +12,7 @@ type Journey = {
   fromStop: string
   toStop: string
   time?: string
+  vehiclePlate?: string
   boardingCount?: number
   alightingCount?: number
   notes?: string
@@ -23,6 +24,7 @@ type JourneyFormState = {
   bound: string
   fromStop: string
   toStop: string
+  vehiclePlate: string
   notes: string
 }
 
@@ -47,6 +49,13 @@ type RouteListEntry = {
 }
 
 const STORAGE_KEY = 'hkpubtrec_journeys_v1'
+
+/** Sanitize vehicle plate: capital A-Z (excl. I,O,Q) + 0-9 only */
+function sanitizeVehiclePlate(value: string): string {
+  return value
+    .toUpperCase()
+    .replace(/[^A-HJ-NPR-Z0-9]/g, '')
+}
 
 function getLocalDateString(): string {
   const d = new Date()
@@ -76,6 +85,19 @@ const COMPANY_CHIP_COLORS: Record<string, { backgroundColor: string; color: stri
   nlb: { backgroundColor: '#027233', color: '#ffffff' },
   lrtfeeder: { backgroundColor: '#0E2A51', color: '#ffffff' },
   lightrail: { backgroundColor: '#D3A809', color: '#ffffff' },
+}
+
+const MTR_ROUTE_LABELS: Record<string, { zh: string; en: string }> = {
+  TKL: { zh: '將軍澳線', en: 'Tseung Kwan O Line' },
+  TWL: { zh: '荃灣線', en: 'Tsuen Wan Line' },
+  KTL: { zh: '觀塘線', en: 'Kwun Tong Line' },
+  SIL: { zh: '南港島線', en: 'South Island Line' },
+  TML: { zh: '屯馬線', en: 'Tuen Ma Line' },
+  AEL: { zh: '機場快線', en: 'Airport Express Line' },
+  ISL: { zh: '港島線', en: 'Island Line' },
+  EAL: { zh: '東鐵線', en: 'East Rail Line' },
+  DRL: { zh: '迪士尼線', en: 'Disneyland Resort Line' },
+  TCL: { zh: '東涌線', en: 'Tung Chung Line' },
 }
 
 type Language = 'zh-HK' | 'en'
@@ -128,6 +150,10 @@ const translations: Record<
     lockDragSelection: string
     unlockDragSelection: string
     specialDepartureLabel: string
+    tabRecord: string
+    tabSavedJourneys: string
+    vehiclePlateLabel: string
+    vehiclePlatePlaceholder: string
   }
 > = {
   'zh-HK': {
@@ -176,6 +202,10 @@ const translations: Record<
     lockDragSelection: '鎖定拖曳',
     unlockDragSelection: '解鎖拖曳',
     specialDepartureLabel: '特別班次',
+    tabRecord: '新增行程',
+    tabSavedJourneys: '已紀錄行程',
+    vehiclePlateLabel: '車牌',
+    vehiclePlatePlaceholder: '大寫英文字母及數字（不含 I、O、Q）',
   },
   en: {
     appTitle: 'Public Transport Journey Record',
@@ -225,6 +255,10 @@ const translations: Record<
     lockDragSelection: 'Lock drag',
     unlockDragSelection: 'Unlock drag',
     specialDepartureLabel: 'Special',
+    tabRecord: 'Add journey',
+    tabSavedJourneys: 'Saved journeys',
+    vehiclePlateLabel: 'Vehicle plate',
+    vehiclePlatePlaceholder: 'Capital letters & numbers (excl. I, O, Q)',
   },
 }
 
@@ -241,11 +275,22 @@ type RouteType =
   | 'shuttle'
   | 'disneyRecreational'
   | 'r8'
-  | 'awe'
-  | 'peak'
-  | 'hkSightseeing'
-  | 'nlbSpecial'
-  | 'nlbExpress'
+  | 'awe' // KMB AWE type route
+  | 'peak'  // CTB Peak type route
+  | 'hkSightseeing' // CTB H-type route
+  | 'nlbSpecial' // NLB Special / N-type route
+  | 'nlbExpress' // NLB Express route
+  | 'mtrTkl'  // MTR Tseung Kwan O Line
+  | 'mtrTwl'  // MTR Tsuen Wan Line
+  | 'mtrKtl'  // MTR Kwun Tong Line
+  | 'mtrSil'  // MTR South Island Line
+  | 'mtrTml'  // MTR Tuen Ma Line
+  | 'mtrAel'  // MTR Airport Express Line
+  | 'mtrIsl'  // MTR Island Line
+  | 'mtrEal'  // MTR East Rail Line
+  | 'mtrDrl'  // MTR Disneyland Resort Line
+  | 'mtrTcl'  // MTR Tung Chung Line
+
 
 type RouteStyle = { backgroundColor?: string; color?: string }
 
@@ -289,6 +334,18 @@ const COMPANY_ROUTE_STYLES: Record<
     overnight: { backgroundColor: '#000000', color: '#FFFF00' },
     nlbSpecial: { backgroundColor: '#027233', color: '#ffffff' },
     nlbExpress: { backgroundColor: '#000080', color: '#FFFF00' },
+  },
+  mtr: {
+    mtrTkl: { backgroundColor: '#7F3D91', color: '#ffffff' },
+    mtrTwl: { backgroundColor: '#FF0000', color: '#ffffff' },
+    mtrKtl: { backgroundColor: '#007500', color: '#ffffff' },
+    mtrSil: { backgroundColor: '#CFCF0A', color: '#ffffff' },
+    mtrTml: { backgroundColor: '#992E05', color: '#ffffff' },
+    mtrAel: { backgroundColor: '#087D86', color: '#ffffff' },
+    mtrIsl: { backgroundColor: '#0175BB', color: '#ffffff' },
+    mtrEal: { backgroundColor: '#5BB7E9', color: '#ffffff' },
+    mtrDrl: { backgroundColor: '#E86CA4', color: '#ffffff' },
+    mtrTcl: { backgroundColor: '#E3A147', color: '#ffffff' },
   }
 }
 
@@ -341,6 +398,18 @@ const COMPANY_ROUTE_TYPE_RULES: Record<string, RouteTypeRule[]> = {
     { type: 'nlbSpecial', regex: /^(7|34)S$/i },
     { type: 'nlbExpress', regex: /^(X11R|XB2|NB2)$/i },
   ],
+  mtr: [
+    { type: 'mtrTkl', regex: /^TKL$/i },
+    { type: 'mtrTwl', regex: /^TWL$/i },
+    { type: 'mtrKtl', regex: /^KTL$/i },
+    { type: 'mtrSil', regex: /^SIL$/i },
+    { type: 'mtrTml', regex: /^TML$/i },
+    { type: 'mtrAel', regex: /^AEL$/i },
+    { type: 'mtrIsl', regex: /^ISL$/i },
+    { type: 'mtrEal', regex: /^EAL$/i },
+    { type: 'mtrDrl', regex: /^DRL$/i },
+    { type: 'mtrTcl', regex: /^TCL$/i },
+  ],
   default: [],
 }
 
@@ -363,6 +432,7 @@ function createEmptyFormState(): JourneyFormState {
     bound: '',
     fromStop: '',
     toStop: '',
+    vehiclePlate: '',
     notes: '',
   }
 }
@@ -393,6 +463,7 @@ function App() {
   >({})
   const isDraggingRef = useRef(false)
   const [dragSelectionLocked, setDragSelectionLocked] = useState(false)
+  const [activeTab, setActiveTab] = useState<'record' | 'saved'>('record')
 
   const t = translations[language]
 
@@ -784,6 +855,7 @@ function App() {
       fromStop: trimmedFromStop,
       toStop: trimmedToStop,
       time: journeyDuration || undefined,
+      vehiclePlate: form.vehiclePlate.trim() || undefined,
       notes: form.notes.trim() || undefined,
     }
 
@@ -836,7 +908,30 @@ function App() {
         </div>
       </header>
 
+      <nav className="app-tabs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'record'}
+          className={`app-tab ${activeTab === 'record' ? 'app-tab--active' : ''}`}
+          onClick={() => setActiveTab('record')}
+        >
+          {t.tabRecord}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'saved'}
+          className={`app-tab ${activeTab === 'saved' ? 'app-tab--active' : ''}`}
+          onClick={() => setActiveTab('saved')}
+        >
+          {t.tabSavedJourneys}
+        </button>
+      </nav>
+
       <main className="app-layout">
+        {activeTab === 'record' && (
+          <>
         <section className="panel">
           <h2 className="panel-title">{t.searchBusRouteTitle}</h2>
           {isRouteDbLoading && <p className="helper-text">{t.routesLoading}</p>}
@@ -883,6 +978,18 @@ function App() {
                     const originLabel = language === 'zh-HK' ? entry.origZh : entry.origEn
                     const destLabel = language === 'zh-HK' ? entry.destZh : entry.destEn
 
+                    const routeDisplayLabel =
+                      primaryCompany === 'mtr' && entry.route
+                        ? (() => {
+                            const labels = MTR_ROUTE_LABELS[entry.route.trim().toUpperCase()]
+                            if (labels) {
+                              const label = language === 'zh-HK' ? labels.zh : labels.en
+                              return `${entry.route}  ${label}`
+                            }
+                            return entry.route
+                          })()
+                        : entry.route
+
                     return (
                       <li key={entry.routeId}>
                         <button
@@ -899,7 +1006,7 @@ function App() {
                           </span>
                           <span className="route-list-number-wrap">
                             <span className="route-list-number" style={routeStyle}>
-                              {entry.route}
+                              {routeDisplayLabel}
                             </span>
                             {entry.serviceType != '1' && (
                               <span className="route-list-special-badge">
@@ -1011,75 +1118,64 @@ function App() {
                       >
                         <span className="station-order">{stop.order}</span>
                         <span className="station-name">{stop.name}</span>
-                        {isInRange ? (
-                          <>
-                            <input
-                              type="time"
-                              className="station-input"
-                              value={data.arrivalTime}
-                              onChange={(e) =>
-                                updateStationStop(
-                                  selectedRouteId,
-                                  stop.id,
-                                  'arrivalTime',
-                                  e.target.value,
-                                )
-                              }
-                              onMouseDown={(e) => e.stopPropagation()}
-                            />
-                            <input
-                              type="number"
-                              className="station-input"
-                              min={0}
-                              inputMode="numeric"
-                              placeholder="—"
-                              value={data.aboard}
-                              onChange={(e) =>
-                                updateStationStop(selectedRouteId, stop.id, 'aboard', e.target.value)
-                              }
-                              onMouseDown={(e) => e.stopPropagation()}
-                            />
-                            <input
-                              type="number"
-                              className="station-input"
-                              min={0}
-                              inputMode="numeric"
-                              placeholder="—"
-                              value={data.alighting}
-                              onChange={(e) =>
-                                updateStationStop(
-                                  selectedRouteId,
-                                  stop.id,
-                                  'alighting',
-                                  e.target.value,
-                                )
-                              }
-                              onMouseDown={(e) => e.stopPropagation()}
-                            />
-                            <input
-                              type="text"
-                              className="station-input station-remark-input"
-                              placeholder="—"
-                              value={data.remark}
-                              onChange={(e) =>
-                                updateStationStop(
-                                  selectedRouteId,
-                                  stop.id,
-                                  'remark',
-                                  e.target.value,
-                                )
-                              }
-                              onMouseDown={(e) => e.stopPropagation()}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <span className="station-input-placeholder">—</span>
-                            <span className="station-input-placeholder">—</span>
-                            <span className="station-input-placeholder">—</span>
-                            <span className="station-input-placeholder">—</span>
-                          </>
-                        )}
+                        <input
+                          type="time"
+                          className="station-input"
+                          value={data.arrivalTime}
+                          onChange={(e) =>
+                            updateStationStop(
+                              selectedRouteId,
+                              stop.id,
+                              'arrivalTime',
+                              e.target.value,
+                            )
+                          }
+                          onMouseDown={(e) => e.stopPropagation()}
+                        />
+                        <input
+                          type="number"
+                          className="station-input"
+                          min={0}
+                          inputMode="numeric"
+                          placeholder="—"
+                          value={data.aboard}
+                          onChange={(e) =>
+                            updateStationStop(selectedRouteId, stop.id, 'aboard', e.target.value)
+                          }
+                          onMouseDown={(e) => e.stopPropagation()}
+                        />
+                        <input
+                          type="number"
+                          className="station-input"
+                          min={0}
+                          inputMode="numeric"
+                          placeholder="—"
+                          value={data.alighting}
+                          onChange={(e) =>
+                            updateStationStop(
+                              selectedRouteId,
+                              stop.id,
+                              'alighting',
+                              e.target.value,
+                            )
+                          }
+                          onMouseDown={(e) => e.stopPropagation()}
+                        />
+                        <input
+                          type="text"
+                          className="station-input station-remark-input"
+                          placeholder="—"
+                          value={data.remark}
+                          onChange={(e) =>
+                            updateStationStop(
+                              selectedRouteId,
+                              stop.id,
+                              'remark',
+                              e.target.value,
+                            )
+                          }
+                          onMouseDown={(e) => e.stopPropagation()}
+                        />
                       </li>
                     )
                   })}
@@ -1119,6 +1215,7 @@ function App() {
                     value={form.route}
                     onChange={(event) => updateForm('route', event.target.value)}
                     autoComplete="off"
+                    disabled={true}
                   />
                   {selectedRouteId &&
                     (() => {
@@ -1182,6 +1279,21 @@ function App() {
                   )}
                 </div>
               </div>
+
+              <div className="form-field">
+                <label htmlFor="vehiclePlate">{t.vehiclePlateLabel}</label>
+                <input
+                  id="vehiclePlate"
+                  type="text"
+                  placeholder={t.vehiclePlatePlaceholder}
+                  value={form.vehiclePlate}
+                  onChange={(e) =>
+                    updateForm('vehiclePlate', sanitizeVehiclePlate(e.target.value))
+                  }
+                  autoComplete="off"
+                  maxLength={8}
+                />
+              </div>
             </div>
 
             <div className="form-field">
@@ -1200,7 +1312,10 @@ function App() {
             </div>
           </form>
         </section>
+          </>
+        )}
 
+        {activeTab === 'saved' && (
         <section className="panel">
           <h2 className="panel-title">{t.journeysTitle}</h2>
 
@@ -1239,6 +1354,7 @@ function App() {
                     <th>Bound</th>
                     <th>From → To</th>
                     <th>Duration</th>
+                    <th>{t.vehiclePlateLabel}</th>
                     <th>Notes</th>
                   </tr>
                 </thead>
@@ -1254,6 +1370,7 @@ function App() {
                         <span className="to-stop">{journey.toStop}</span>
                       </td>
                       <td>{journey.time ?? '-'}</td>
+                      <td>{journey.vehiclePlate ?? '-'}</td>
                       <td className="notes-cell">{journey.notes ?? '-'}</td>
                     </tr>
                   ))}
@@ -1262,6 +1379,7 @@ function App() {
             </div>
           )}
         </section>
+        )}
       </main>
     </div>
   )

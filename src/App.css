@@ -33,6 +33,36 @@
   max-width: 620px;
 }
 
+.app-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.app-tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.app-tab:hover {
+  color: #0f172a;
+}
+
+.app-tab--active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
 .app-layout {
   display: grid;
   gap: 1.5rem;
@@ -718,5 +748,55 @@
 
   .form-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Route list mobile: single row, compact */
+  .route-list-items {
+    grid-template-columns: auto auto minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.25rem 0.4rem;
+    padding: 0.25rem;
+  }
+
+  .route-list-item {
+    padding: 0.45rem 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .route-list-company {
+    min-width: 0;
+    padding: 0.2rem 0.35rem;
+    font-size: 0.68rem;
+  }
+
+  .route-list-origin,
+  .route-list-dest {
+    font-size: 0.75rem;
+    min-width: 0;
+  }
+
+  .route-list-number {
+    padding: 0.2rem 0.35rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .route-list-items {
+    gap: 0 0.3rem;
+  }
+
+  .route-list-company {
+    font-size: 0.62rem;
+    padding: 0.15rem 0.25rem;
+  }
+
+  .route-list-origin,
+  .route-list-dest {
+    font-size: 0.7rem;
+  }
+
+  .route-list-number {
+    font-size: 0.75rem;
+    padding: 0.18rem 0.3rem;
   }
 }

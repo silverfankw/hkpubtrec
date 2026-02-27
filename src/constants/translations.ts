@@ -55,7 +55,6 @@ export const translations: Record<
     savedJourneyStopDetails: string
     noStopDataSaved: string
     periodLabel: string
-    companyAndRouteLabel: string
     routeAndBoundLabel: string
     routeFormPlaceholder: string
     routeBoundToggleExpand: string
@@ -128,11 +127,11 @@ export const translations: Record<
     savedJourneyStopDetails: '停站詳情',
     noStopDataSaved: '此行程未有儲存停站資料。',
     periodLabel: '時段',
-    companyAndRouteLabel: '公司 及 路線',
     routeAndBoundLabel: '路線及方向',
     routeFormPlaceholder: '請選擇路線及方向',
     routeBoundToggleExpand: '展開路線搜尋',
     routeBoundToggleCollapse: '收合路線搜尋',
+    switchBoundLabel: '切換方向',
     confirmSaveTitle: '確認行程資料',
     confirmSave: '確認儲存',
     cancel: '取消',
@@ -201,11 +200,11 @@ export const translations: Record<
     savedJourneyStopDetails: 'Stop details',
     noStopDataSaved: 'No stop data saved for this journey.',
     periodLabel: 'Period',
-    companyAndRouteLabel: 'Company & Route',
     routeAndBoundLabel: 'Route & Bound',
     routeFormPlaceholder: 'Select route and bound',
     routeBoundToggleExpand: 'Expand route search',
     routeBoundToggleCollapse: 'Collapse route search',
+    switchBoundLabel: 'Switch direction',
     confirmSaveTitle: 'Confirm journey data',
     confirmSave: 'Confirm save',
     cancel: 'Cancel',

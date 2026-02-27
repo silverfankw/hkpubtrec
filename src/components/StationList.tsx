@@ -183,6 +183,7 @@ export function StationList({
                 <span className="station-order">{stop.order}</span>
                 <span className="station-name">{stop.name}</span>
                 <span className="station-input-col station-time-col">
+                  <span className="station-time-mobile-label">{t.arrivalTimeLabel}</span>
                   <input
                     type="time"
                     className={`station-input ${hasTimeWarning ? 'station-input--warning' : ''}`}
@@ -206,7 +207,7 @@ export function StationList({
                   className="station-input"
                   min={0}
                   inputMode="numeric"
-                  placeholder="—"
+                  placeholder={t.aboardingLabel}
                   value={data.aboard}
                   disabled={!canEditInputs}
                   onChange={(e) =>
@@ -219,7 +220,7 @@ export function StationList({
                   className="station-input"
                   min={0}
                   inputMode="numeric"
-                  placeholder="—"
+                  placeholder={t.alightingLabel}
                   value={data.alighting}
                   disabled={!canEditInputs}
                   onChange={(e) =>
@@ -227,13 +228,13 @@ export function StationList({
                   }
                   onMouseDown={(e) => e.stopPropagation()}
                 />
-                <span className="station-onboard-value">
+                <span className="station-onboard-value" aria-label={t.onBoardLabel}>
                   {onBoardValue != null ? String(onBoardValue) : '—'}
                 </span>
                 <input
                   type="text"
                   className="station-input station-remark-input"
-                  placeholder="—"
+                  placeholder={t.remarkLabel}
                   value={data.remark}
                   disabled={!canEditInputs}
                   onChange={(e) =>

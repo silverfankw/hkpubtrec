@@ -114,6 +114,27 @@ export function RecordTab({
       : `${selectedEntry.origEn} → ${selectedEntry.destEn}`
   }, [selectedEntry, language])
 
+  const availableBounds = useMemo(() => {
+    if (!selectedEntry) return []
+    const companyKey = [...selectedEntry.companyCodes].sort().join(',')
+    return routeEntries.filter(
+      (e) =>
+        e.route === selectedEntry.route &&
+        [...e.companyCodes].sort().join(',') === companyKey &&
+        e.serviceType === '1',
+    )
+  }, [selectedEntry, routeEntries])
+
+  const handleChangeBound = () => {
+    if (availableBounds.length <= 1) return
+    const currentIndex = availableBounds.findIndex((b) => b.routeId === selectedRouteId)
+    const nextIndex = (currentIndex + 1) % availableBounds.length
+    setSelectedRouteId(availableBounds[nextIndex].routeId)
+    setJourneySelection(null)
+    setSelectionPhase('idle')
+    setDragSelectionLocked(false)
+  }
+
   const selectedRouteMeta = useMemo(() => {
     if (!etaDb || !selectedRouteId) return null
     return etaDb.routeList[selectedRouteId] ?? null
@@ -407,6 +428,17 @@ export function RecordTab({
                     <>
                       <RouteBadge entry={selectedEntry} language={language} specialLabel={t.specialDepartureLabel} />
                       <span className="route-form-bound-text">{selectedBoundLabel || '—'}</span>
+                      {availableBounds.length > 1 && !selectedEntry.companyCodes.includes('gmb') && selectedEntry.serviceType === '1' && (
+                        <button
+                          type="button"
+                          className="route-bound-switch-btn"
+                          onClick={handleChangeBound}
+                          title={t.switchBoundLabel}
+                          aria-label={t.switchBoundLabel}
+                        >
+                          ⇄ {t.switchBoundLabel}
+                        </button>
+                      )}
                     </>
                   ) : (
                     <span className="route-form-placeholder">{t.routeFormPlaceholder}</span>

@@ -333,11 +333,25 @@
   box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.25);
 }
 
+.station-row-data input[type='number']::placeholder {
+  color: transparent;
+}
+
+@media (max-width: 640px) {
+  .station-row-data input[type='number']::placeholder {
+    color: #9ca3af;
+  }
+}
+
 .station-time-col {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.2rem;
+}
+
+.station-time-mobile-label {
+  display: none;
 }
 
 .station-time-warning {
@@ -390,16 +404,35 @@
   }
 
   .station-row-main {
-    display: grid;
-    grid-template-columns: 1.75rem 1fr 5.5rem;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem;
+    column-gap: 0.4rem;
+    row-gap: 0.2rem;
     width: 100%;
+  }
+
+  .station-row-main .station-order {
+    flex: 0 0 1.75rem;
+    width: 1.75rem;
+  }
+
+  .station-row-main .station-name {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .station-time-col {
+    flex: 0 0 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.1rem;
+    padding-left: calc(1.75rem + 0.4rem);
   }
 
   .station-row-data {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr minmax(3rem, 1fr);
     align-items: center;
     gap: 0.35rem;
     width: 100%;
@@ -411,11 +444,23 @@
     display: none;
   }
 
+  .station-onboard-value {
+    display: none;
+  }
+
   .station-list-item .station-input {
     font-size: 0.82rem;
   }
 
   .station-name {
     font-size: 0.85rem;
+  }
+
+  .station-time-mobile-label {
+    display: block;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    line-height: 1;
+    text-align: center;
   }
 }

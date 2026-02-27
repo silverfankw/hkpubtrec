@@ -19,6 +19,15 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
     ? `${journey.stops[0]?.arrivalTime || '—'} - ${journey.stops[journey.stops.length - 1]?.arrivalTime || '—'}`
     : '—'
 
+  const fromStopOrder = journey.stops?.[0]?.order
+  const toStopOrder = journey.stops?.length ? journey.stops[journey.stops.length - 1]?.order : undefined
+
+  const formatStopOrder = (order: number) => {
+    if (language === 'zh-HK') return `第${order}個站  `
+    const suffix = order === 1 ? 'st' : order === 2 ? 'nd' : order === 3 ? 'rd' : 'th'
+    return `${order}${suffix} stop  `
+  }
+
   return (
     <div className="saved-journey-detail-panel">
       <div className="saved-journey-summary">
@@ -27,7 +36,7 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
           <dd>{journey.date}</dd>
           <dt>{t.periodLabel}</dt>
           <dd>{periodStr}</dd>
-          <dt>{t.companyAndRouteLabel}</dt>
+          <dt>{t.routeLabel}</dt>
           <dd>
             {entry ? (
               <span className="journey-table-company-route">
@@ -39,12 +48,10 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
           </dd>
           <dt>{t.boundLabel}</dt>
           <dd>{journey.bound}</dd>
-          <dt>{t.fromToLabel}</dt>
-          <dd className="from-to-cell">
-            <span className="from-stop">{journey.fromStop}</span>
-            <span className="arrow">→</span>
-            <span className="to-stop">{journey.toStop}</span>
-          </dd>
+          <dt>{t.fromStopLabel}</dt>
+          <dd>{fromStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(fromStopOrder)}</span> : ''}{journey.fromStop ?? '—'}</dd>
+          <dt>{t.toStopLabel}</dt>
+          <dd>{toStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(toStopOrder)}</span> : ''}{journey.toStop ?? '—'}</dd>
           <dt>{t.vehiclePlateLabel}</dt>
           <dd>{journey.vehiclePlate ?? '—'}</dd>
           <dt>{t.notesLabel}</dt>

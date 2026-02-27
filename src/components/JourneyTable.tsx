@@ -50,9 +50,10 @@ export function JourneyTable({
               </span>
             </th>
             <th>{t.periodLabel}</th>
-            <th>{t.companyAndRouteLabel}</th>
+            <th>{t.routeLabel}</th>
             <th>{t.boundLabel}</th>
-            <th>{t.fromToLabel}</th>
+            <th>{t.fromStopLabel}</th>
+            <th>{t.toStopLabel}</th>
             <th>{t.vehiclePlateLabel}</th>
             <th className="journey-table-actions-header" aria-label={t.removeJourney} />
           </tr>
@@ -99,13 +100,8 @@ export function JourneyTable({
                     ? t.boundToPrefix + journey.bound.split(' → ').pop()
                     : journey.bound}
                 </td>
-                <td className="from-to-cell">
-                  <span className="from-to-cell-inner">
-                    <span className="from-stop">{journey.fromStop}</span>
-                    <span className="arrow">→</span>
-                    <span className="to-stop">{journey.toStop}</span>
-                  </span>
-                </td>
+                <td>{journey.fromStop ?? '—'}</td>
+                <td>{journey.toStop ?? '—'}</td>
                 <td>{journey.vehiclePlate ?? '-'}</td>
                 <td className="journey-table-actions-cell">
                   <button

@@ -8,9 +8,10 @@ type Props = {
   routeEntries: RouteListEntry[]
   language: Language
   t: TranslationKeys
+  onExport: () => void
 }
 
-export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
+export function JourneyDetail({ journey, routeEntries, language, t, onExport }: Props) {
   const entry = journey.routeId
     ? routeEntries.find((e) => e.routeId === journey.routeId)
     : null
@@ -68,7 +69,7 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
               <span className="station-order">#</span>
               <span className="station-name">{t.stationNameLabel}</span>
               <span>{t.arrivalTimeLabel}</span>
-              <span>{t.aboardingLabel}</span>
+              <span>{t.boardingLabel}</span>
               <span>{t.alightingLabel}</span>
               <span>{t.onBoardLabel}</span>
               <span>{t.totalPassengersLabel}</span>
@@ -117,6 +118,11 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
             })()}
           </ul>
         )}
+      </div>
+      <div className="saved-journey-actions">
+        <button type="button" onClick={onExport}>
+          {t.exportJourney}
+        </button>
       </div>
     </div>
   )

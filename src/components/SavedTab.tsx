@@ -1,8 +1,11 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import type { Journey, RouteListEntry, Language } from '../types'
 import type { TranslationKeys } from '../constants/translations'
+import { exportJourneyToJson, exportAllJourneysToJson, downloadJsonFile, importJourneysFromJson } from '../utils'
 import { JourneyTable } from './JourneyTable'
 import { JourneyDetail } from './JourneyDetail'
+import './SavedTab.css'
+
 
 type Props = {
   journeys: Journey[]
@@ -11,12 +14,14 @@ type Props = {
   t: TranslationKeys
   onRemoveJourney: (journeyId: string) => void
   onClearAll: () => void
+  onImportJourneys: (newJourneys: Journey[]) => void
 }
 
-export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney, onClearAll }: Props) {
+export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney, onClearAll, onImportJourneys }: Props) {
   const [filterRoute, setFilterRoute] = useState('')
   const [dateSortDir, setDateSortDir] = useState<'asc' | 'desc'>('desc')
   const [selectedJourneyId, setSelectedJourneyId] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const visibleJourneys = useMemo(() => {
     const routeFilter = filterRoute.trim().toLowerCase()
@@ -46,6 +51,35 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney,
     setSelectedJourneyId((prev) => (prev === journeyId ? null : prev))
   }
 
+  const handleExportAll = () => {
+    downloadJsonFile(exportAllJourneysToJson(visibleJourneys), `journeys-${new Date().toISOString().slice(0, 10)}.json`)
+  }
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      try {
+        const raw = ev.target?.result as string
+        const { newJourneys, skippedCount } = importJourneysFromJson(raw, journeys)
+        onImportJourneys(newJourneys)
+        const msg = t.importSuccess
+          .replace('{count}', String(newJourneys.length))
+          .replace('{skipped}', String(skippedCount))
+        window.alert(msg)
+      } catch {
+        window.alert(t.importError)
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
   const selectedJourney = selectedJourneyId
     ? visibleJourneys.find((j) => j.id === selectedJourneyId)
     : null
@@ -54,7 +88,6 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney,
     <section className="panel">
       <div className="filters">
         <div className="form-field">
-          <label htmlFor="filterRoute">{t.filterByRoute}</label>
           <input
             id="filterRoute"
             type="text"
@@ -63,9 +96,24 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney,
             onChange={(event) => setFilterRoute(event.target.value)}
           />
         </div>
-        <button type="button" className="clear-button" onClick={onClearAll}>
-          {t.clearAll}
-        </button>
+        <div className="saved-tab-actions">
+          <button type="button" className="clear-button" onClick={handleImportClick}>
+            {t.importJourneys}
+          </button>
+          <button type="button" className="clear-button" onClick={handleExportAll} disabled={visibleJourneys.length === 0}>
+            {t.exportAllJourneys}
+          </button>
+          <button type="button" className="clear-button" onClick={onClearAll}>
+            {t.clearAll}
+          </button>
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json,application/json"
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
       </div>
 
       {visibleJourneys.length === 0 ? (
@@ -90,6 +138,12 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney,
               routeEntries={routeEntries}
               language={language}
               t={t}
+              onExport={() =>
+                downloadJsonFile(
+                  exportJourneyToJson(selectedJourney),
+                  `journey-${selectedJourney.date}-${selectedJourney.route}.json`,
+                )
+              }
             />
           )}
         </>

@@ -1,8 +1,69 @@
+import { useState } from 'react'
 import type { JourneySelection, StopInputData } from '../types'
 import type { TranslationKeys } from '../constants/translations'
 import type { SelectionPhase } from '../hooks/useStationDrag'
 import { sanitizeNonNegative } from '../utils'
 import './StationList.css'
+
+function serializeData(data: StopInputData): string {
+  let result = ''
+  if (data.arrivalTime) {
+    result += data.arrivalTime.replace(':', '')
+  }
+  if (data.aboard) {
+    result += `+${data.aboard}`
+  }
+  if (data.alighting) {
+    result += `-${data.alighting}`
+  }
+  if (data.remark) {
+    result += `/${data.remark}`
+  }
+  return result
+}
+
+function parseInput(raw: string): StopInputData {
+  let remaining = raw.trim()
+  let arrivalTime = ''
+  let aboard = ''
+  let alighting = ''
+  let remark = ''
+
+  const slashIdx = remaining.indexOf('/')
+  if (slashIdx !== -1) {
+    remark = remaining.slice(slashIdx + 1)
+    remaining = remaining.slice(0, slashIdx)
+  }
+
+  const timeMatch = remaining.match(/^(\d{1,4})/)
+  if (timeMatch) {
+    const digits = timeMatch[1]
+    if (digits.length === 4) {
+      const hh = String(Math.min(parseInt(digits.slice(0, 2), 10), 23)).padStart(2, '0')
+      const mm = String(Math.min(parseInt(digits.slice(2), 10), 59)).padStart(2, '0')
+      arrivalTime = `${hh}:${mm}`
+    } else if (digits.length === 3) {
+      const hh = String(Math.min(parseInt(digits.slice(0, 2), 10), 23)).padStart(2, '0')
+      arrivalTime = `${hh}:${digits[2]}`
+    } else {
+      arrivalTime = String(Math.min(parseInt(digits, 10), 23)).padStart(digits.length, '0')
+    }
+    remaining = remaining.slice(digits.length)
+  }
+
+  const aboardMatch = remaining.match(/\+(\d+)/)
+  if (aboardMatch) {
+    aboard = String(Math.min(parseInt(aboardMatch[1], 10), 151))
+    remaining = remaining.replace(aboardMatch[0], '')
+  }
+
+  const alightingMatch = remaining.match(/-(\d+)/)
+  if (alightingMatch) {
+    alighting = String(Math.min(parseInt(alightingMatch[1], 10), 151))
+  }
+
+  return { arrivalTime, aboard, alighting, remark }
+}
 
 type StopInfo = { id: string; order: number; name: string }
 
@@ -13,7 +74,6 @@ type Props = {
   dragSelectionLocked: boolean
   selectionPhase: SelectionPhase
   stationStopData: Record<string, StopInputData>
-  stationOnBoardMap: Record<number, number>
   initialPassengersOnBoard: string
   timeWarnings: Set<number>
   crossMidnight: boolean
@@ -38,7 +98,6 @@ export function StationList({
   dragSelectionLocked,
   selectionPhase,
   stationStopData,
-  stationOnBoardMap,
   initialPassengersOnBoard,
   timeWarnings,
   crossMidnight,
@@ -50,6 +109,9 @@ export function StationList({
   onInitialPassengersChange,
   t,
 }: Props) {
+  const [editingStopKey, setEditingStopKey] = useState<string | null>(null)
+  const [rawInput, setRawInput] = useState('')
+
   const sel = journeySelection?.routeId === selectedRouteId ? journeySelection : null
   const start = sel ? Math.min(sel.startOrder, sel.endOrder) : 0
   const end = sel ? Math.max(sel.startOrder, sel.endOrder) : 0
@@ -97,24 +159,23 @@ export function StationList({
           <div className="station-row-main">
             <span className="station-order">#</span>
             <span className="station-name">{t.stationNameLabel}</span>
-            <span className="station-input-col">{t.arrivalTimeLabel}</span>
+            {dragSelectionLocked && (
+              <span
+                className="station-input-col station-format-hint-col"
+                style={{ gridColumn: '3 / -1' }}
+                title={t.stationInputFormatExample}
+              >
+                {t.stationInputFormatLabel}
+              </span>
+            )}
           </div>
-          <div className="station-row-data">
-            <span className="station-input-col">{t.aboardingLabel}</span>
-            <span className="station-input-col">{t.alightingLabel}</span>
-            <span className="station-input-col station-onboard-col">{t.onBoardLabel}</span>
-            <span className="station-input-col station-remark-col">{t.remarkLabel}</span>
-          </div>
+          <div className="station-row-data" />
         </li>
         {stops.flatMap((stop) => {
           const isInRange = sel ? stop.order >= start && stop.order <= end : false
           const isTapStart = isAwaitingEnd && sel && stop.order === sel.startOrder
           const isFirstSelected = isInRange && stop.order === start && dragSelectionLocked
           const canEditInputs = isInRange && dragSelectionLocked
-          const onBoardValue =
-            isInRange && stop.order in stationOnBoardMap
-              ? stationOnBoardMap[stop.order]
-              : null
 
           const dataKey = `${selectedRouteId}|${stop.order}`
           const data = stationStopData[dataKey] ?? {
@@ -152,6 +213,8 @@ export function StationList({
             )
           }
 
+          const isEditing = editingStopKey === dataKey
+
           rows.push(
             <li
               key={`${selectedRouteId}|${stop.order}`}
@@ -182,115 +245,76 @@ export function StationList({
               <div className="station-row-main">
                 <span className="station-order">{stop.order}</span>
                 <span className="station-name">{stop.name}</span>
-                <span className="station-input-col station-time-col">
-                  {isInRange && (
-                    <>
-                      <span className="station-field-label">{t.arrivalTimeLabel}</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        placeholder="HH:MM"
-                        maxLength={5}
-                        className={`station-input ${hasTimeWarning ? 'station-input--warning' : ''}`}
-                        value={data.arrivalTime}
-                        disabled={!canEditInputs}
-                        onChange={(e) => {
-                          const digits = e.target.value.replace(/\D/g, '').slice(0, 4)
-                          if (digits.length === 0) {
-                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', '')
-                            return
-                          }
-                          if (digits.length <= 2) {
-                            const h = Math.min(parseInt(digits, 10), 23)
-                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', String(h).padStart(digits.length, '0'))
-                            return
-                          }
-                          const hh = String(Math.min(parseInt(digits.slice(0, 2), 10), 23)).padStart(2, '0')
-                          if (digits.length === 3) {
-                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', `${hh}:${digits[2]}`)
-                            return
-                          }
-                          const mm = String(Math.min(parseInt(digits.slice(2), 10), 59)).padStart(2, '0')
-                          onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', `${hh}:${mm}`)
-                        }}
-                        onMouseDown={(e) => e.stopPropagation()}
-                      />
-                      {canEditInputs && data.arrivalTime && (
-                        <button
-                          type="button"
-                          className="station-time-clear-btn"
-                          onMouseDown={(e) => {
-                            e.stopPropagation()
-                            e.preventDefault()
-                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', '')
-                          }}
-                          aria-label="Clear time"
-                        >
-                          ×
-                        </button>
-                      )}
-                      {hasTimeWarning && (
-                        <span className="station-time-warning" title={t.timeOrderWarning}>
-                          !
-                        </span>
-                      )}
-                    </>
-                  )}
-                </span>
-              </div>
-              <div className={`station-row-data${canEditInputs ? '' : ' station-row-data--inactive'}`}>
-                <div className="station-pax-row">
-                  <div className="station-field-row">
-                    <span className="station-field-label">{t.aboardingLabel}</span>
+                {canEditInputs ? (
+                  isEditing ? (
                     <input
-                      type="number"
-                      className="station-input"
-                      min={0}
-                      inputMode="numeric"
-                      placeholder=""
-                      value={data.aboard}
-                      disabled={!canEditInputs}
-                      onChange={(e) =>
-                        onUpdateStop(selectedRouteId, stop.order, 'aboard', sanitizeNonNegative(e.target.value))
-                      }
+                      type="text"
+                      className="station-combined-input"
+                      style={{ gridColumn: '3 / -1' }}
+                      value={rawInput}
+                      placeholder="HHMM+aboard-alighting/remark"
+                      // eslint-disable-next-line jsx-a11y/no-autofocus
+                      autoFocus
+                      onChange={(e) => setRawInput(e.target.value)}
+                      onBlur={() => {
+                        const parsed = parseInput(rawInput)
+                        onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', parsed.arrivalTime)
+                        onUpdateStop(selectedRouteId, stop.order, 'aboard', parsed.aboard)
+                        onUpdateStop(selectedRouteId, stop.order, 'alighting', parsed.alighting)
+                        onUpdateStop(selectedRouteId, stop.order, 'remark', parsed.remark)
+                        setEditingStopKey(null)
+                      }}
                       onMouseDown={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                          setEditingStopKey(null)
+                        }
+                        e.stopPropagation()
+                      }}
                     />
-                  </div>
-                  <div className="station-field-row">
-                    <span className="station-field-label">{t.alightingLabel}</span>
-                    <input
-                      type="number"
-                      className="station-input"
-                      min={0}
-                      inputMode="numeric"
-                      placeholder=""
-                      value={data.alighting}
-                      disabled={!canEditInputs}
-                      onChange={(e) =>
-                        onUpdateStop(selectedRouteId, stop.order, 'alighting', sanitizeNonNegative(e.target.value))
-                      }
+                  ) : (
+                    <button
+                      type="button"
+                      className={`station-combined-display${hasTimeWarning ? ' station-combined-display--warning' : ''}`}
+                      style={{ gridColumn: '3 / -1' }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setEditingStopKey(dataKey)
+                        setRawInput(serializeData(data))
+                      }}
                       onMouseDown={(e) => e.stopPropagation()}
-                    />
-                  </div>
-                </div>
-                <span className="station-onboard-value" aria-label={t.onBoardLabel}>
-                  {onBoardValue != null ? String(onBoardValue) : '—'}
-                </span>
-                <div className="station-field-row">
-                  <span className="station-field-label">{t.remarkLabel}</span>
-                  <input
-                    type="text"
-                    className="station-input station-remark-input"
-                    placeholder=""
-                    value={data.remark}
-                    disabled={!canEditInputs}
-                    onChange={(e) =>
-                      onUpdateStop(selectedRouteId, stop.order, 'remark', e.target.value)
-                    }
-                    onMouseDown={(e) => e.stopPropagation()}
-                  />
-                </div>
+                      title={t.combinedInputHint}
+                    >
+                      {data.arrivalTime || data.aboard || data.alighting || data.remark ? (
+                        <>
+                          {data.arrivalTime && (
+                            <span className={`combined-time${hasTimeWarning ? ' combined-time--warning' : ''}`}>
+                              {data.arrivalTime}
+                            </span>
+                          )}
+                          {data.aboard && <span className="combined-aboard">+{data.aboard}</span>}
+                          {data.alighting && <span className="combined-alighting">-{data.alighting}</span>}
+                          {data.remark && <span className="combined-remark">{data.remark}</span>}
+                          {hasTimeWarning && (
+                            <span className="combined-warning-msg">{t.timeOrderWarning}</span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="combined-placeholder">HHMM+上車人數-落車人數/備註</span>
+                      )}
+                    </button>
+                  )
+                ) : (
+                  <span />
+                )}
               </div>
+              {!canEditInputs && (
+                <div className="station-row-data station-row-data--inactive">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              )}
             </li>
           )
           return rows

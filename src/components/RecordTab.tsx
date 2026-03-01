@@ -494,7 +494,6 @@ export function RecordTab({
                     dragSelectionLocked={dragSelectionLocked}
                     selectionPhase={selectionPhase}
                     stationStopData={stationStopData}
-                    stationOnBoardMap={stationOnBoardMap}
                     initialPassengersOnBoard={initialPassengersOnBoard}
                     timeWarnings={timeWarnings}
                     crossMidnight={crossMidnight}
@@ -519,6 +518,19 @@ export function RecordTab({
                     t={t}
                   />
                 )}
+                {timeWarnings.size > 0 && (
+                  <div className="form-field form-field--full-width record-cross-midnight">
+                    <label className="cross-midnight-label">
+                      <input
+                        type="checkbox"
+                        checked={crossMidnight}
+                        onChange={(e) => setCrossMidnight(e.target.checked)}
+                      />
+                      <span>{t.crossMidnightLabel}</span>
+                    </label>
+                    <p className="helper-text">{t.crossMidnightHint}</p>
+                  </div>
+                )}
                 <div className="station-stop-range">
                   <div className="form-field">
                     <label htmlFor="fromStop">{t.fromStopLabel}</label>
@@ -537,20 +549,6 @@ export function RecordTab({
               )}
             </div>
 
-            {timeWarnings.size > 0 && (
-              <div className="form-field form-field--full-width record-cross-midnight">
-                <label className="cross-midnight-label">
-                  <input
-                    type="checkbox"
-                    checked={crossMidnight}
-                    onChange={(e) => setCrossMidnight(e.target.checked)}
-                  />
-                  <span>{t.crossMidnightLabel}</span>
-                </label>
-                <p className="helper-text">{t.crossMidnightHint}</p>
-              </div>
-            )}
-
             <div className="form-field form-field--full-width record-notes-field">
               <label htmlFor="notes">{t.notesLabel}</label>
               <textarea
@@ -564,7 +562,13 @@ export function RecordTab({
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="primary-button">{t.saveJourney}</button>
+            <button
+              type="submit"
+              className="primary-button"
+              disabled={!selectedStopRange.fromStop || !selectedStopRange.toStop}
+            >
+              {t.saveJourney}
+            </button>
           </div>
         </form>
       </section>

@@ -15,7 +15,7 @@ export const translations: Record<
     fromStopLabel: string
     toStopLabel: string
     fromToLabel: string
-    aboardingLabel: string
+    boardingLabel: string
     alightingLabel: string
     notesLabel: string
     notesPlaceholderLabel: string
@@ -38,6 +38,9 @@ export const translations: Record<
     tapEndHint: string
     lockSelectionHint: string
     enterDataHint: string
+    combinedInputHint: string
+    stationInputFormatLabel: string
+    stationInputFormatExample: string
     durationLabel: string
     durationPlaceholder: string
     selectAllStations: string
@@ -75,6 +78,11 @@ export const translations: Record<
     changeRouteBtn: string
     journeyTotalRow: string
     totalPassengersLabel: string
+    exportJourney: string
+    exportAllJourneys: string
+    importJourneys: string
+    importSuccess: string
+    importError: string
   }
 > = {
   'zh-HK': {
@@ -103,7 +111,7 @@ export const translations: Record<
     validationCountsMustBeNumber: '上車及落車人數必須為數字。',
     stationNameLabel: '車站',
     arrivalTimeLabel: '到站時間',
-    aboardingLabel: '上車人數',
+    boardingLabel: '上車人數',
     alightingLabel: '落車人數',
     onBoardLabel: '車上人數',
     initialOnBoardLabel: '起點站前車上人數',
@@ -113,6 +121,9 @@ export const translations: Record<
     tapEndHint: '點擊另一車站以設定 行程終點站。',
     lockSelectionHint: '按鎖定選取按鈕，再輸入各個站的相關數據。',
     enterDataHint: '輸入各個站的相關數據。如要重新選取起點/終點站，請先按解鎖選取。',
+    combinedInputHint: '點擊以輸入數據，格式為\'HHMM+上車人數-落車人數/備註\' (HHMM為24小時制)',
+    stationInputFormatLabel: '輸入格式為\'HHMM+上車人數-落車人數/備註\' (HHMM為24小時制)',
+    stationInputFormatExample: '例: 1324+3-7/有乘客滋擾車長（13:24到達該站, 3位乘客上車, 7位乘客落車, 備註:有乘客滋擾車長）',
     durationLabel: '行程時間',
     durationPlaceholder: '請輸入首尾站到站時間以計算',
     selectAllStations: '全選',
@@ -124,7 +135,7 @@ export const translations: Record<
     tabRecord: '新增行程',
     tabSavedJourneys: '已紀錄行程',
     vehiclePlateLabel: '車牌 / 車號',
-    vehiclePlatePlaceholder: '大寫英文字母或數字（不含 I、O、Q）',
+    vehiclePlatePlaceholder: '字母或數字 (不包括 I/O/Q)',
     journeySavedNotification: '行程已儲存',
     savedJourneyStopDetails: '停站詳情',
     noStopDataSaved: '此行程未有儲存停站資料。',
@@ -150,6 +161,11 @@ export const translations: Record<
     changeRouteBtn: '更改路線',
     journeyTotalRow: '總計',
     totalPassengersLabel: '總人數',
+    exportJourney: '匯出此行程',
+    exportAllJourneys: '匯出全部行程',
+    importJourneys: '匯入行程',
+    importSuccess: '已匯入 {count} 個行程，跳過 {skipped} 個重複紀錄。',
+    importError: '匯入失敗，請確認檔案格式正確。',
   },
   en: {
     appTitle: 'Public Transport Journey Record',
@@ -178,7 +194,7 @@ export const translations: Record<
     validationCountsMustBeNumber: 'Boarding and alighting counts must be numbers.',
     stationNameLabel: 'Station',
     arrivalTimeLabel: 'Arrival Time',
-    aboardingLabel: 'No. of Aboard pax',
+    boardingLabel: 'No. of Aboard pax',
     alightingLabel: 'No. of Alighting Pax',
     onBoardLabel: 'On board',
     initialOnBoardLabel: 'No. of Passenger before this stop',
@@ -188,6 +204,9 @@ export const translations: Record<
     tapEndHint: 'Tap another station to set the end of your journey range.',
     lockSelectionHint: 'Lock the selection, then enter data for each station.',
     enterDataHint: 'Enter data for each station.',
+    combinedInputHint: 'Tap to enter data. Format: HHMM+aboard-alighting/remark',
+    stationInputFormatLabel: 'HHMM+aboard-alighting/remark',
+    stationInputFormatExample: 'e.g. 1324+3-7/Pax nuisance (13:24, 3 boarding, 7 alighting, note: Pax nuisance)',
     durationLabel: 'Duration',
     durationPlaceholder: 'Enter first & last stop arrival times to calculate',
     selectAllStations: 'Select all',
@@ -195,11 +214,11 @@ export const translations: Record<
     lockStationRangeSelection: 'Lock selection',
     unlockStationRangeSelection: 'Unlock selection',
     specialDepartureLabel: 'Special',
-    specialDepartureLabelShort: 'Sp',
+    specialDepartureLabelShort: 'Sp.',
     tabRecord: 'Add journey',
     tabSavedJourneys: 'Saved journeys',
     vehiclePlateLabel: 'Plate / Fleet no.',
-    vehiclePlatePlaceholder: 'Capital letters & numbers (excl. I, O, Q)',
+    vehiclePlatePlaceholder: 'Letters & numbers (excl. I, O, Q)',
     journeySavedNotification: 'Journey saved',
     savedJourneyStopDetails: 'Stop details',
     noStopDataSaved: 'No stop data saved for this journey.',
@@ -225,6 +244,11 @@ export const translations: Record<
     changeRouteBtn: 'Change route',
     journeyTotalRow: 'Total',
     totalPassengersLabel: 'Total Pax',
+    exportJourney: 'Export this journey',
+    exportAllJourneys: 'Export all journeys',
+    importJourneys: 'Import journeys',
+    importSuccess: 'Imported {count} journey(s), skipped {skipped} duplicate(s).',
+    importError: 'Import failed. Please check the file format.',
   },
 }
 

@@ -81,3 +81,76 @@ export function sanitizeNonNegative(value: string): string {
   if (value.startsWith('-')) return ''
   return value.replace(/[^0-9]/g, '')
 }
+
+// ─── Export / Import ──────────────────────────────────────────────────────────
+
+type ExportedJourney = Omit<Journey, 'id' | 'totalOnBoard' | 'boardingCount' | 'alightingCount'>
+
+function stripJourneyForExport(journey: Journey): ExportedJourney {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _id, totalOnBoard: _t, boardingCount: _b, alightingCount: _a, ...rest } = journey
+  return Object.fromEntries(
+    Object.entries(rest).filter(([, v]) => v !== undefined),
+  ) as ExportedJourney
+}
+
+export function exportJourneyToJson(journey: Journey): string {
+  return JSON.stringify(stripJourneyForExport(journey))
+}
+
+export function exportAllJourneysToJson(journeys: Journey[]): string {
+  return JSON.stringify(journeys.map(stripJourneyForExport))
+}
+
+export function downloadJsonFile(content: string, filename: string): void {
+  const blob = new Blob([content], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+function isDuplicateJourney(existing: Journey[], incoming: Journey): boolean {
+  return existing.some(
+    (j) =>
+      j.date === incoming.date &&
+      j.route === incoming.route &&
+      j.bound === incoming.bound &&
+      j.fromStop === incoming.fromStop &&
+      j.toStop === incoming.toStop,
+  )
+}
+
+export function importJourneysFromJson(
+  raw: string,
+  existing: Journey[],
+): { newJourneys: Journey[]; skippedCount: number } {
+  const parsed: unknown = JSON.parse(raw)
+  const items = Array.isArray(parsed) ? parsed : [parsed]
+  const newJourneys: Journey[] = []
+  let skippedCount = 0
+  let pool = [...existing]
+
+  for (const item of items) {
+    if (typeof item !== 'object' || item === null) continue
+    const j = item as Partial<Journey>
+    if (!j.date || !j.route || !j.bound || !j.fromStop || !j.toStop) continue
+
+    const candidate: Journey = {
+      ...(j as Journey),
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    }
+
+    if (isDuplicateJourney(pool, candidate)) {
+      skippedCount++
+      continue
+    }
+
+    newJourneys.push(candidate)
+    pool = [...pool, candidate]
+  }
+
+  return { newJourneys, skippedCount }
+}

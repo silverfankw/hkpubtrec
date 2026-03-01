@@ -15,7 +15,7 @@ function App() {
 
   const t = translations[language]
   const { etaDb, routeMap, routeEntries, isRouteDbLoading, routeDbError } = useRouteDb()
-  const { journeys, addJourney, removeJourney, clearAll } = useJourneys()
+  const { journeys, addJourney, removeJourney, clearAll, importJourneys } = useJourneys()
 
   const showNotification = () => {
     setSaveNotificationVisible(true)
@@ -80,6 +80,7 @@ function App() {
             t={t}
             onRemoveJourney={removeJourney}
             onClearAll={clearAll}
+            onImportJourneys={importJourneys}
           />
         )}
       </main>

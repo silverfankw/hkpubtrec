@@ -28,5 +28,9 @@ export function useJourneys() {
     setJourneys([])
   }
 
-  return { journeys, addJourney, removeJourney, clearAll }
+  const importJourneys = (newJourneys: Journey[]) => {
+    setJourneys((prev) => [...prev, ...newJourneys])
+  }
+
+  return { journeys, addJourney, removeJourney, clearAll, importJourneys }
 }

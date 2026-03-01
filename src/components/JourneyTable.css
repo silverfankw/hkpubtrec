@@ -1,5 +1,6 @@
 .filters {
   display: flex;
+  align-items: center;
   gap: 0.9rem;
   margin-bottom: 0.9rem;
 }

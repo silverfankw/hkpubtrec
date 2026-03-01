@@ -6,10 +6,9 @@ type Props = {
   language: Language
   onLanguageChange: (lang: Language) => void
   t: TranslationKeys
-  onClearAll: () => void
 }
 
-export function AppHeader({ language, onLanguageChange, t, onClearAll }: Props) {
+export function AppHeader({ language, onLanguageChange, t }: Props) {
   return (
     <header className="app-header">
       <div>
@@ -41,9 +40,6 @@ export function AppHeader({ language, onLanguageChange, t, onClearAll }: Props) 
             EN
           </button>
         </div>
-        <button type="button" className="clear-button" onClick={onClearAll}>
-          {t.clearAll}
-        </button>
       </div>
     </header>
   )

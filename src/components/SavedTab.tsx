@@ -10,26 +10,22 @@ type Props = {
   language: Language
   t: TranslationKeys
   onRemoveJourney: (journeyId: string) => void
+  onClearAll: () => void
 }
 
-export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney }: Props) {
+export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney, onClearAll }: Props) {
   const [filterRoute, setFilterRoute] = useState('')
-  const [filterBound, setFilterBound] = useState('')
   const [dateSortDir, setDateSortDir] = useState<'asc' | 'desc'>('desc')
   const [selectedJourneyId, setSelectedJourneyId] = useState<string | null>(null)
 
   const visibleJourneys = useMemo(() => {
     const routeFilter = filterRoute.trim().toLowerCase()
-    const boundFilter = filterBound.trim().toLowerCase()
 
     const filtered = journeys.filter((journey) => {
       const matchesRoute = routeFilter
         ? journey.route.toLowerCase().includes(routeFilter)
         : true
-      const matchesBound = boundFilter
-        ? journey.bound.toLowerCase().includes(boundFilter)
-        : true
-      return matchesRoute && matchesBound
+      return matchesRoute
     })
 
     return [...filtered].sort((a, b) => {
@@ -40,7 +36,7 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney 
       if (dateCmp !== 0) return dateCmp
       return b.id.localeCompare(a.id)
     })
-  }, [journeys, filterRoute, filterBound, dateSortDir])
+  }, [journeys, filterRoute, dateSortDir])
 
   const handleRemoveJourney = (journeyId: string, e: React.MouseEvent) => {
     e.stopPropagation()
@@ -67,16 +63,9 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney 
             onChange={(event) => setFilterRoute(event.target.value)}
           />
         </div>
-        <div className="form-field">
-          <label htmlFor="filterBound">{t.filterByBound}</label>
-          <input
-            id="filterBound"
-            type="text"
-            placeholder={t.filterBoundPlaceholder}
-            value={filterBound}
-            onChange={(event) => setFilterBound(event.target.value)}
-          />
-        </div>
+        <button type="button" className="clear-button" onClick={onClearAll}>
+          {t.clearAll}
+        </button>
       </div>
 
       {visibleJourneys.length === 0 ? (

@@ -71,11 +71,13 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
               <span>{t.aboardingLabel}</span>
               <span>{t.alightingLabel}</span>
               <span>{t.onBoardLabel}</span>
+              <span>{t.totalPassengersLabel}</span>
               <span>{t.remarkLabel}</span>
             </li>
             {(() => {
               const initial = journey.initialOnBoard ?? 0
               let cumulative = initial
+              let cumulativeAboard = 0
               const hasInitialRow = initial > 0
               const rows: React.ReactNode[] = []
               if (hasInitialRow) {
@@ -87,6 +89,7 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
                     <span>—</span>
                     <span>—</span>
                     <span className="saved-station-onboard-cell">{initial}</span>
+                    <span>—</span>
                     <span>{t.initialOnBoardLabel}</span>
                   </li>,
                 )
@@ -95,6 +98,8 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
                 const aboard = parseInt(stop.aboard ?? '0', 10) || 0
                 const alighting = parseInt(stop.alighting ?? '0', 10) || 0
                 cumulative += aboard - alighting
+                cumulativeAboard += aboard
+                const totalPassengers = initial + cumulativeAboard
                 rows.push(
                   <li key={`${stop.stopId}-${stop.order}`} className="saved-station-list-item">
                     <span className="station-order">{stop.order}</span>
@@ -103,6 +108,7 @@ export function JourneyDetail({ journey, routeEntries, language, t }: Props) {
                     <span>{stop.aboard || '—'}</span>
                     <span>{stop.alighting || '—'}</span>
                     <span className="saved-station-onboard-cell">{cumulative}</span>
+                    <span className="saved-station-onboard-cell">{totalPassengers > 0 ? totalPassengers : '—'}</span>
                     <span>{stop.remark || '—'}</span>
                   </li>,
                 )

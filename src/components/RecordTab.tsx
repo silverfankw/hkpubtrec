@@ -20,6 +20,7 @@ import { RouteBadge } from './RouteBadge'
 import { RouteSearch } from './RouteSearch'
 import { StationList } from './StationList'
 import { ConfirmDialog } from './ConfirmDialog'
+import './RecordTab.css'
 
 type Props = {
   etaDb: EtaDb | null
@@ -53,6 +54,7 @@ export function RecordTab({
   const [initialPassengersOnBoard, setInitialPassengersOnBoard] = useState('')
   const [pendingJourney, setPendingJourney] = useState<Journey | null>(null)
   const [crossMidnight, setCrossMidnight] = useState(false)
+  const [mobileStage, setMobileStage] = useState<'search' | 'record'>('search')
 
   const {
     journeySelection,
@@ -74,6 +76,7 @@ export function RecordTab({
     setRouteBoundSectionExpanded(true)
     setInitialPassengersOnBoard('')
     setCrossMidnight(false)
+    setMobileStage('search')
   }
 
   const updateForm = <K extends keyof JourneyFormState>(key: K, value: JourneyFormState[K]) => {
@@ -91,6 +94,11 @@ export function RecordTab({
       ...prev,
       [key]: { ...prev[key], [field]: value },
     }))
+  }
+
+  const handleSelectRoute = (routeId: string) => {
+    setSelectedRouteId(routeId)
+    setMobileStage('record')
   }
 
   useEffect(() => {
@@ -384,8 +392,23 @@ export function RecordTab({
         />
       )}
       <section className="panel">
-        <form className="journey-form" onSubmit={handleSubmit}>
+        <form className="journey-form" onSubmit={handleSubmit} data-mobile-stage={mobileStage}>
+          {selectedEntry && (
+            <div className="record-route-strip">
+              <RouteBadge entry={selectedEntry} language={language} specialLabel={t.specialDepartureLabel} />
+              <span className="record-route-strip-bound">{selectedBoundLabel}</span>
+              <button
+                type="button"
+                className="record-route-strip-edit-btn"
+                onClick={() => setMobileStage('search')}
+                aria-label={t.changeRouteBtn}
+              >
+                ✎
+              </button>
+            </div>
+          )}
           <div className="form-grid form-grid--journey">
+            <div className="record-meta-fields">
             <div className="form-field">
               <label htmlFor="date">{t.dateLabel}</label>
               <input
@@ -408,6 +431,7 @@ export function RecordTab({
                 autoComplete="off"
                 maxLength={8}
               />
+            </div>
             </div>
 
             <div className="form-field form-field--full-width">
@@ -446,11 +470,11 @@ export function RecordTab({
                 </span>
               </div>
 
-              {routeBoundSectionExpanded && (
+              {(routeBoundSectionExpanded || mobileStage === 'search') && (
                 <RouteSearch
                   routeEntries={routeEntries}
                   selectedRouteId={selectedRouteId}
-                  onSelectRoute={setSelectedRouteId}
+                  onSelectRoute={handleSelectRoute}
                   language={language}
                   t={t}
                   isLoading={isRouteDbLoading}
@@ -514,7 +538,7 @@ export function RecordTab({
             </div>
 
             {timeWarnings.size > 0 && (
-              <div className="form-field form-field--full-width">
+              <div className="form-field form-field--full-width record-cross-midnight">
                 <label className="cross-midnight-label">
                   <input
                     type="checkbox"
@@ -527,7 +551,7 @@ export function RecordTab({
               </div>
             )}
 
-            <div className="form-field form-field--full-width">
+            <div className="form-field form-field--full-width record-notes-field">
               <label htmlFor="notes">{t.notesLabel}</label>
               <textarea
                 id="notes"

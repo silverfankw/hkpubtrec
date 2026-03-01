@@ -34,7 +34,6 @@ function App() {
         language={language}
         onLanguageChange={setLanguage}
         t={t}
-        onClearAll={clearAll}
       />
 
       <nav className="app-tabs" role="tablist">
@@ -80,6 +79,7 @@ function App() {
             language={language}
             t={t}
             onRemoveJourney={removeJourney}
+            onClearAll={clearAll}
           />
         )}
       </main>

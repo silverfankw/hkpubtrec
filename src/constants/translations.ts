@@ -21,9 +21,7 @@ export const translations: Record<
     notesPlaceholderLabel: string
     saveJourney: string
     filterByRoute: string
-    filterByBound: string
     filterRoutePlaceholder: string
-    filterBoundPlaceholder: string
     noJourneys: string
     routesLoading: string
     routesError: string
@@ -47,6 +45,7 @@ export const translations: Record<
     lockStationRangeSelection: string
     unlockStationRangeSelection: string
     specialDepartureLabel: string
+    specialDepartureLabelShort: string
     tabRecord: string
     tabSavedJourneys: string
     vehiclePlateLabel: string
@@ -59,6 +58,7 @@ export const translations: Record<
     routeFormPlaceholder: string
     routeBoundToggleExpand: string
     routeBoundToggleCollapse: string
+    switchBoundLabel: string
     confirmSaveTitle: string
     confirmSave: string
     cancel: string
@@ -72,13 +72,16 @@ export const translations: Record<
     crossMidnightLabel: string
     crossMidnightHint: string
     validationEndTimeBeforeStart: string
+    changeRouteBtn: string
+    journeyTotalRow: string
+    totalPassengersLabel: string
   }
 > = {
   'zh-HK': {
     appTitle: '公共交通行程紀錄',
     appSubtitle: '搜尋交通工具路線及方向，然後記錄由起點至終點的行程，包括可選時間及上落客人數。',
-    clearAll: '清除全部',
-    routeSearchPlaceholder: '以路線編號／起點站／終點站搜尋，例如：1A、中環、旺角',
+    clearAll: '刪除全部行程',
+    routeSearchPlaceholder: '以路線編號搜尋，如：10 / 70K / 268X / E32A',
     noRoutesFound: '找不到相關路線，請嘗試其他關鍵字。',
     noStationsForRoute: '此路線未有可用的車站資料。',
     dateLabel: '日期',
@@ -91,9 +94,7 @@ export const translations: Record<
     notesPlaceholderLabel: "行程中的特別事項",
     saveJourney: '儲存行程',
     filterByRoute: '以路線篩選',
-    filterByBound: '以方向篩選',
     filterRoutePlaceholder: '搜尋路線',
-    filterBoundPlaceholder: '搜尋方向',
     noJourneys: '暫未有行程紀錄，可在右方新增第一個紀錄。',
     routesLoading: '正在載入香港官方巴士路線資料…',
     routesError: '未能載入官方路線列表，你仍然可以手動輸入路線及方向。',
@@ -107,7 +108,7 @@ export const translations: Record<
     onBoardLabel: '車上人數',
     initialOnBoardLabel: '起點站前車上人數',
     initialOnBoardPlaceholder: '若由中途站開始選取，請輸入該站開出前的車上人數',
-    remarkLabel: '備註 (選填)',
+    remarkLabel: '行程備註 (選填)',
     journeyDragHint: '點擊以選擇 起點車站。',
     tapEndHint: '點擊另一車站以設定 行程終點站。',
     lockSelectionHint: '按鎖定選取按鈕，再輸入各個站的相關數據。',
@@ -119,6 +120,7 @@ export const translations: Record<
     lockStationRangeSelection: '鎖定選取',
     unlockStationRangeSelection: '解鎖選取',
     specialDepartureLabel: '特別班次',
+    specialDepartureLabelShort: '特',
     tabRecord: '新增行程',
     tabSavedJourneys: '已紀錄行程',
     vehiclePlateLabel: '車牌 / 車號',
@@ -145,13 +147,16 @@ export const translations: Record<
     crossMidnightLabel: '跨午夜行程',
     crossMidnightHint: '若行程跨越午夜（例如 23:58 上車，00:12 落車），請勾選此項。',
     validationEndTimeBeforeStart: '終點站到站時間不能早於起點站。如為跨午夜行程，請勾選「跨午夜行程」。',
+    changeRouteBtn: '更改路線',
+    journeyTotalRow: '總計',
+    totalPassengersLabel: '總人數',
   },
   en: {
     appTitle: 'Public Transport Journey Record',
     appSubtitle:
       'Search your bus route and bound, then record journeys from starting stop to destination with optional time and passenger counts.',
-    clearAll: 'Clear all',
-    routeSearchPlaceholder: 'Search by Route No. / origin stop / destination stop, e.g. 1A, Central, Mong Kok',
+    clearAll: 'Delete all journeys',
+    routeSearchPlaceholder: 'Search by Route No., e.g. 10 / 70K / 268X / E32A',
     noRoutesFound: 'No routes found. Try another keyword.',
     noStationsForRoute: 'No station data available for this route.',
     dateLabel: 'Date',
@@ -164,9 +169,7 @@ export const translations: Record<
     notesPlaceholderLabel: 'Remark about this journey...',
     saveJourney: 'Save journey',
     filterByRoute: 'Filter by route',
-    filterByBound: 'Filter by bound',
     filterRoutePlaceholder: 'Search route',
-    filterBoundPlaceholder: 'Search bound / direction',
     noJourneys: 'No journeys recorded yet. Add your first journey on the right.',
     routesLoading: 'Loading official Hong Kong bus routes…',
     routesError: 'Unable to load official route list. You can still type route and bound manually.',
@@ -180,7 +183,7 @@ export const translations: Record<
     onBoardLabel: 'On board',
     initialOnBoardLabel: 'No. of Passenger before this stop',
     initialOnBoardPlaceholder: 'If selection starts from a mid-route stop, enter passengers on board before that stop',
-    remarkLabel: 'Remark (optional)',
+    remarkLabel: 'Journey remark (optional)',
     journeyDragHint: 'Tap a starting station.',
     tapEndHint: 'Tap another station to set the end of your journey range.',
     lockSelectionHint: 'Lock the selection, then enter data for each station.',
@@ -192,6 +195,7 @@ export const translations: Record<
     lockStationRangeSelection: 'Lock selection',
     unlockStationRangeSelection: 'Unlock selection',
     specialDepartureLabel: 'Special',
+    specialDepartureLabelShort: 'Sp',
     tabRecord: 'Add journey',
     tabSavedJourneys: 'Saved journeys',
     vehiclePlateLabel: 'Plate / Fleet no.',
@@ -218,6 +222,9 @@ export const translations: Record<
     crossMidnightLabel: 'Cross-midnight journey',
     crossMidnightHint: 'Tick this if the journey crosses midnight (e.g. board at 23:58, alight at 00:12).',
     validationEndTimeBeforeStart: 'End time cannot be earlier than start time. If this is a cross-midnight journey, please tick "Cross-midnight journey".',
+    changeRouteBtn: 'Change route',
+    journeyTotalRow: 'Total',
+    totalPassengersLabel: 'Total Pax',
   },
 }
 

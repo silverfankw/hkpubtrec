@@ -169,6 +169,10 @@
   display: contents;
 }
 
+.station-pax-row {
+  display: contents;
+}
+
 .station-onboard-col {
   text-align: center;
 }
@@ -333,14 +337,12 @@
   box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.25);
 }
 
-.station-row-data input[type='number']::placeholder {
-  color: transparent;
+.station-field-label {
+  display: none;
 }
 
-@media (max-width: 640px) {
-  .station-row-data input[type='number']::placeholder {
-    color: #9ca3af;
-  }
+.station-field-row {
+  display: contents;
 }
 
 .station-time-col {
@@ -348,10 +350,6 @@
   display: flex;
   align-items: center;
   gap: 0.2rem;
-}
-
-.station-time-mobile-label {
-  display: none;
 }
 
 .station-time-warning {
@@ -367,6 +365,24 @@
   background-color: #dc2626;
   border-radius: 50%;
   cursor: help;
+}
+
+.station-time-clear-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.1rem;
+  display: flex;
+  align-items: center;
+  touch-action: manipulation;
+}
+
+.station-time-clear-btn:hover {
+  color: #ef4444;
 }
 
 .cross-midnight-label {
@@ -424,19 +440,18 @@
 
   .station-time-col {
     flex: 0 0 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4rem;
     padding-left: calc(1.75rem + 0.4rem);
   }
 
   .station-row-data {
-    display: grid;
-    grid-template-columns: 1fr 1fr minmax(3rem, 1fr);
-    align-items: center;
-    gap: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
     width: 100%;
-    margin-top: 0.25rem;
+    margin-top: 0.3rem;
     padding-left: 2.15rem;
   }
 
@@ -444,23 +459,51 @@
     display: none;
   }
 
+  .station-pax-row {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .station-pax-row .station-field-row {
+    flex: 1;
+    min-width: 0;
+  }
+
   .station-onboard-value {
     display: none;
   }
 
   .station-list-item .station-input {
-    font-size: 0.82rem;
+    font-size: 16px !important;
   }
 
   .station-name {
     font-size: 0.85rem;
   }
 
-  .station-time-mobile-label {
+  .station-field-label {
     display: block;
-    font-size: 0.65rem;
-    color: #94a3b8;
-    line-height: 1;
-    text-align: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-width: 3.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #64748b;
+  }
+
+  .station-field-label::after {
+    content: ':';
+  }
+
+  .station-field-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .station-field-row .station-input,
+  .station-time-col .station-input {
+    flex: 1;
+    min-width: 0;
   }
 }

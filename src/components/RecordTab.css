@@ -1,0 +1,79 @@
+/* Transparent grid wrapper so date+plate fields stay as direct grid items */
+.record-meta-fields {
+  display: contents;
+}
+
+/* Compact route strip hidden by default; shown only in record stage */
+.record-route-strip {
+  display: none;
+}
+
+/* Always hide the route-and-bound label and toggle row —
+   the compact strip (record stage) or the plain list (search stage) replaces them */
+label#route-bound,
+.route-form-company-route {
+  display: none !important;
+}
+
+/* --- Stage: search --- show only the route list */
+.journey-form[data-mobile-stage="search"] .record-meta-fields {
+  display: none;
+}
+
+.journey-form[data-mobile-stage="search"] .station-section,
+.journey-form[data-mobile-stage="search"] .record-cross-midnight,
+.journey-form[data-mobile-stage="search"] .record-notes-field,
+.journey-form[data-mobile-stage="search"] .form-actions {
+  display: none !important;
+}
+
+/* --- Stage: record --- hide route search, show compact strip */
+.journey-form[data-mobile-stage="record"] #route-bound-section {
+  display: none !important;
+}
+
+.journey-form[data-mobile-stage="record"] .record-route-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.record-route-strip-bound {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  color: #475569;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-route-strip-edit-btn {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.4rem;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #475569;
+  font-family: inherit;
+  line-height: 1.4;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.record-route-strip-edit-btn:active {
+  background: #e2e8f0;
+}
+
+@media (max-width: 640px) {
+  .record-route-strip-bound {
+    font-size: 0.85rem;
+  }
+}

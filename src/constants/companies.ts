@@ -1,9 +1,9 @@
 export const COMPANY_LABELS: Record<string, string> = {
   kmb: '九巴',
   ctb: '城巴',
-  gmb: '綠色小巴',
+  gmb: '小巴',
   nlb: '嶼巴',
-  lrtfeeder: '港鐵接駁巴士',
+  lrtfeeder: '鐵巴',
   lightrail: '輕鐵',
   sunferry: '新渡輪',
   fortuneferry: '富裕小輪',

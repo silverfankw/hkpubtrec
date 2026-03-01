@@ -183,65 +183,113 @@ export function StationList({
                 <span className="station-order">{stop.order}</span>
                 <span className="station-name">{stop.name}</span>
                 <span className="station-input-col station-time-col">
-                  <span className="station-time-mobile-label">{t.arrivalTimeLabel}</span>
-                  <input
-                    type="time"
-                    className={`station-input ${hasTimeWarning ? 'station-input--warning' : ''}`}
-                    value={data.arrivalTime}
-                    disabled={!canEditInputs}
-                    onChange={(e) =>
-                      onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', e.target.value)
-                    }
-                    onMouseDown={(e) => e.stopPropagation()}
-                  />
-                  {hasTimeWarning && (
-                    <span className="station-time-warning" title={t.timeOrderWarning}>
-                      !
-                    </span>
+                  {isInRange && (
+                    <>
+                      <span className="station-field-label">{t.arrivalTimeLabel}</span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="HH:MM"
+                        maxLength={5}
+                        className={`station-input ${hasTimeWarning ? 'station-input--warning' : ''}`}
+                        value={data.arrivalTime}
+                        disabled={!canEditInputs}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, '').slice(0, 4)
+                          if (digits.length === 0) {
+                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', '')
+                            return
+                          }
+                          if (digits.length <= 2) {
+                            const h = Math.min(parseInt(digits, 10), 23)
+                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', String(h).padStart(digits.length, '0'))
+                            return
+                          }
+                          const hh = String(Math.min(parseInt(digits.slice(0, 2), 10), 23)).padStart(2, '0')
+                          if (digits.length === 3) {
+                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', `${hh}:${digits[2]}`)
+                            return
+                          }
+                          const mm = String(Math.min(parseInt(digits.slice(2), 10), 59)).padStart(2, '0')
+                          onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', `${hh}:${mm}`)
+                        }}
+                        onMouseDown={(e) => e.stopPropagation()}
+                      />
+                      {canEditInputs && data.arrivalTime && (
+                        <button
+                          type="button"
+                          className="station-time-clear-btn"
+                          onMouseDown={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', '')
+                          }}
+                          aria-label="Clear time"
+                        >
+                          ×
+                        </button>
+                      )}
+                      {hasTimeWarning && (
+                        <span className="station-time-warning" title={t.timeOrderWarning}>
+                          !
+                        </span>
+                      )}
+                    </>
                   )}
                 </span>
               </div>
               <div className={`station-row-data${canEditInputs ? '' : ' station-row-data--inactive'}`}>
-                <input
-                  type="number"
-                  className="station-input"
-                  min={0}
-                  inputMode="numeric"
-                  placeholder={t.aboardingLabel}
-                  value={data.aboard}
-                  disabled={!canEditInputs}
-                  onChange={(e) =>
-                    onUpdateStop(selectedRouteId, stop.order, 'aboard', sanitizeNonNegative(e.target.value))
-                  }
-                  onMouseDown={(e) => e.stopPropagation()}
-                />
-                <input
-                  type="number"
-                  className="station-input"
-                  min={0}
-                  inputMode="numeric"
-                  placeholder={t.alightingLabel}
-                  value={data.alighting}
-                  disabled={!canEditInputs}
-                  onChange={(e) =>
-                    onUpdateStop(selectedRouteId, stop.order, 'alighting', sanitizeNonNegative(e.target.value))
-                  }
-                  onMouseDown={(e) => e.stopPropagation()}
-                />
+                <div className="station-pax-row">
+                  <div className="station-field-row">
+                    <span className="station-field-label">{t.aboardingLabel}</span>
+                    <input
+                      type="number"
+                      className="station-input"
+                      min={0}
+                      inputMode="numeric"
+                      placeholder=""
+                      value={data.aboard}
+                      disabled={!canEditInputs}
+                      onChange={(e) =>
+                        onUpdateStop(selectedRouteId, stop.order, 'aboard', sanitizeNonNegative(e.target.value))
+                      }
+                      onMouseDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                  <div className="station-field-row">
+                    <span className="station-field-label">{t.alightingLabel}</span>
+                    <input
+                      type="number"
+                      className="station-input"
+                      min={0}
+                      inputMode="numeric"
+                      placeholder=""
+                      value={data.alighting}
+                      disabled={!canEditInputs}
+                      onChange={(e) =>
+                        onUpdateStop(selectedRouteId, stop.order, 'alighting', sanitizeNonNegative(e.target.value))
+                      }
+                      onMouseDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </div>
                 <span className="station-onboard-value" aria-label={t.onBoardLabel}>
                   {onBoardValue != null ? String(onBoardValue) : '—'}
                 </span>
-                <input
-                  type="text"
-                  className="station-input station-remark-input"
-                  placeholder={t.remarkLabel}
-                  value={data.remark}
-                  disabled={!canEditInputs}
-                  onChange={(e) =>
-                    onUpdateStop(selectedRouteId, stop.order, 'remark', e.target.value)
-                  }
-                  onMouseDown={(e) => e.stopPropagation()}
-                />
+                <div className="station-field-row">
+                  <span className="station-field-label">{t.remarkLabel}</span>
+                  <input
+                    type="text"
+                    className="station-input station-remark-input"
+                    placeholder=""
+                    value={data.remark}
+                    disabled={!canEditInputs}
+                    onChange={(e) =>
+                      onUpdateStop(selectedRouteId, stop.order, 'remark', e.target.value)
+                    }
+                    onMouseDown={(e) => e.stopPropagation()}
+                  />
+                </div>
               </div>
             </li>
           )

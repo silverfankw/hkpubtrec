@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import type { RouteListEntry, Language } from '../types'
 import type { TranslationKeys } from '../constants/translations'
 import { RouteBadge } from './RouteBadge'
+import { RouteKeypad } from './RouteKeypad'
 import './RouteSearch.css'
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
   error: string | null
 }
 
+
 export function RouteSearch({
   routeEntries,
   selectedRouteId,
@@ -24,6 +26,17 @@ export function RouteSearch({
   error,
 }: Props) {
   const [routeSearch, setRouteSearch] = useState('')
+  const [keypadVisible, setKeypadVisible] = useState(false)
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches,
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   const filteredRouteEntries = useMemo(() => {
     const COMPANY_ORDER: Record<string, number> = { kmb: 0, ctb: 1, nlb: 2, gmb: 3 }
@@ -41,10 +54,9 @@ export function RouteSearch({
 
     const rawTerm = routeSearch.trim()
     if (!rawTerm) {
-      return [...routeEntries].sort(sortByCompany).slice(0, 60)
+      return [...routeEntries].sort(sortByCompany).slice(0, 30)
     }
 
-    const term = rawTerm.toLowerCase().normalize('NFKC')
     const termForRoute = rawTerm.normalize('NFKC')
     const termLower = termForRoute.toLowerCase()
 
@@ -58,21 +70,10 @@ export function RouteSearch({
       return routeNorm.toLowerCase().startsWith(termLower)
     }
 
-    const useOriginDestMatch = term.length >= 2
-
     return routeEntries
       .filter((entry) => {
         const routeNorm = (entry.route ?? '').trim().normalize('NFKC')
-        const routeLower = routeNorm.toLowerCase()
-        const routeMatch = routeLower.startsWith(termLower)
-        const zhMatch = useOriginDestMatch
-          ? entry.origZh.toLowerCase().includes(term) || entry.destZh.toLowerCase().includes(term)
-          : false
-        const enMatch = useOriginDestMatch
-          ? entry.origEn.toLowerCase().includes(term) || entry.destEn.toLowerCase().includes(term)
-          : false
-
-        return routeMatch || zhMatch || enMatch
+        return routeNorm.toLowerCase().startsWith(termLower)
       })
       .sort((a, b) => {
         const fullA = isFullRouteMatch(a)
@@ -94,14 +95,39 @@ export function RouteSearch({
       <div className="route-search-details">
         <div className="route-search">
           <div className="form-field">
-            <input
-              id="routeSearch"
-              type="text"
-              placeholder={t.routeSearchPlaceholder}
-              value={routeSearch}
-              onChange={(event) => setRouteSearch(event.target.value)}
-            />
+            <div className="route-search-input-wrap">
+              <input
+                id="routeSearch"
+                type="text"
+                placeholder={t.routeSearchPlaceholder}
+                value={routeSearch}
+                readOnly={isMobile}
+                onChange={(event) => { if (!isMobile) setRouteSearch(event.target.value) }}
+                onClick={() => { if (isMobile) setKeypadVisible((v) => !v) }}
+                className={isMobile ? 'route-search-input--mobile' : ''}
+              />
+              {routeSearch && (
+                <button
+                  type="button"
+                  className="route-search-clear-btn"
+                  onClick={() => { setRouteSearch(''); setKeypadVisible(false) }}
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
+              )}
+            </div>
           </div>
+
+          {isMobile && keypadVisible && (
+            <RouteKeypad
+              value={routeSearch}
+              routeEntries={routeEntries}
+              onChar={(char) => setRouteSearch((prev) => prev + char)}
+              onBackspace={() => setRouteSearch((prev) => prev.slice(0, -1))}
+              onClear={() => setRouteSearch('')}
+            />
+          )}
 
           <div className="route-list">
             {filteredRouteEntries.length === 0 ? (
@@ -121,12 +147,17 @@ export function RouteSearch({
                             ? 'route-list-item route-list-item--active'
                             : 'route-list-item'
                         }
-                        onClick={() => onSelectRoute(entry.routeId)}
+                        onClick={() => {
+                          onSelectRoute(entry.routeId)
+                          setKeypadVisible(false)
+                        }}
                       >
-                        <RouteBadge entry={entry} language={language} specialLabel={t.specialDepartureLabel} />
-                        <span className="route-list-origin">{originLabel}</span>
-                        <span className="route-list-arrow">→</span>
-                        <span className="route-list-dest">{destLabel}</span>
+                        <RouteBadge entry={entry} language={language} specialLabel={isMobile ? t.specialDepartureLabelShort : t.specialDepartureLabel} />
+                        <span className="route-list-od-group">
+                          <span className="route-list-origin">{originLabel}</span>
+                          <span className="route-list-arrow">→</span>
+                          <span className="route-list-dest">{destLabel}</span>
+                        </span>
                       </button>
                     </li>
                   )

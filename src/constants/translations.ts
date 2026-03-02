@@ -83,6 +83,12 @@ export const translations: Record<
     importSuccess: string
     importError: string
     validationDateFormat: string
+    exportAsImage: string,
+    exportImageTitle: string,
+    exportImageSummarySection: string,
+    exportImageStopSection: string,
+    exportImageStopNote: string,
+    exportingLabel: string
   }
 > = {
   'zh-HK': {
@@ -132,7 +138,7 @@ export const translations: Record<
     specialDepartureLabel: '特別班次',
     specialDepartureLabelShort: '特',
     tabRecord: '新增行程',
-    tabSavedJourneys: '已紀錄行程',
+    tabSavedJourneys: '行程紀錄',
     vehiclePlateLabel: '車牌 / 車號',
     vehiclePlatePlaceholder: '字母或數字 (不包括 I/O/Q)',
     journeySavedNotification: '行程已儲存',
@@ -160,12 +166,18 @@ export const translations: Record<
     changeRouteBtn: '更改路線',
     journeyTotalRow: '總計',
     totalPassengersLabel: '總人數',
-    exportJourney: '匯出此行程',
+    exportJourney: '匯出 JSON 檔案',
     exportAllJourneys: '匯出全部行程',
     importJourneys: '匯入行程',
     importSuccess: '已匯入 {count} 個行程，跳過 {skipped} 個重複紀錄。',
     importError: '匯入失敗，請確認檔案格式正確。',
     validationDateFormat: '請輸入 YYYY/MM/DD 格式的有效日期，且不可超過今天。',
+    exportAsImage: '匯出圖片',
+    exportImageTitle: '選擇要包含的欄位',
+    exportImageSummarySection: '行程概要',
+    exportImageStopSection: '停站欄位',
+    exportImageStopNote: '停站序號及車站名稱將恆常顯示。',
+    exportingLabel: '正在匯出⋯',
   },
   en: {
     appTitle: 'Public Transport Journey Record',
@@ -214,7 +226,7 @@ export const translations: Record<
     specialDepartureLabel: 'Special',
     specialDepartureLabelShort: 'Sp.',
     tabRecord: 'Add journey',
-    tabSavedJourneys: 'Saved journeys',
+    tabSavedJourneys: 'Journey records',
     vehiclePlateLabel: 'Plate / Fleet no.',
     vehiclePlatePlaceholder: 'Letters & numbers (excl. I, O, Q)',
     journeySavedNotification: 'Journey saved',
@@ -242,12 +254,18 @@ export const translations: Record<
     changeRouteBtn: 'Change route',
     journeyTotalRow: 'Total',
     totalPassengersLabel: 'Total Pax',
-    exportJourney: 'Export this journey',
+    exportJourney: 'Export this journey as JSON file',
     exportAllJourneys: 'Export all journeys',
     importJourneys: 'Import journeys',
     importSuccess: 'Imported {count} journey(s), skipped {skipped} duplicate(s).',
     importError: 'Import failed. Please check the file format.',
     validationDateFormat: 'Please enter a valid date in YYYY/MM/DD format, not in the future.',
+    exportAsImage: 'Export as Image',
+    exportImageTitle: 'Select fields to include',
+    exportImageSummarySection: 'Journey Info',
+    exportImageStopSection: 'Stop Columns',
+    exportImageStopNote: 'Stop # and station name are always included.',
+    exportingLabel: 'Exporting...',
   },
 }
 

@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import type { Journey, RouteListEntry, Language } from '../types'
 import type { TranslationKeys } from '../constants/translations'
 import { RouteBadge } from './RouteBadge'
+import { ExportImageModal } from './ExportImageModal'
 import './JourneyDetail.css'
 
 type Props = {
@@ -12,6 +14,8 @@ type Props = {
 }
 
 export function JourneyDetail({ journey, routeEntries, language, t, onExport }: Props) {
+  const [showExportImageModal, setShowExportImageModal] = useState(false)
+
   const entry = journey.routeId
     ? routeEntries.find((e) => e.routeId === journey.routeId)
     : null
@@ -50,9 +54,9 @@ export function JourneyDetail({ journey, routeEntries, language, t, onExport }: 
           <dt>{t.boundLabel}</dt>
           <dd>{journey.bound}</dd>
           <dt>{t.fromStopLabel}</dt>
-          <dd>{fromStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(fromStopOrder)}</span> : ''}{journey.fromStop ?? '—'}</dd>
+          <dd>{journey.fromStop ?? '—'}{fromStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(fromStopOrder)}</span> : ''}</dd>
           <dt>{t.toStopLabel}</dt>
-          <dd>{toStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(toStopOrder)}</span> : ''}{journey.toStop ?? '—'}</dd>
+          <dd>{journey.toStop ?? '—'}{toStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(toStopOrder)}</span> : ''}</dd>
           <dt>{t.vehiclePlateLabel}</dt>
           <dd>{journey.vehiclePlate ?? '—'}</dd>
           <dt>{t.notesLabel}</dt>
@@ -106,10 +110,10 @@ export function JourneyDetail({ journey, routeEntries, language, t, onExport }: 
                     <span className="station-order">{stop.order}</span>
                     <span className="station-name">{stop.name}</span>
                     <span>{stop.arrivalTime || '—'}</span>
-                    <span>{stop.aboard || '—'}</span>
-                    <span>{stop.alighting || '—'}</span>
+                    <span className={stop.aboard ? 'saved-station-boarding-cell' : undefined}>{stop.aboard || '—'}</span>
+                    <span className={stop.alighting ? 'saved-station-alighting-cell' : undefined}>{stop.alighting || '—'}</span>
                     <span className="saved-station-onboard-cell">{cumulative}</span>
-                    <span className="saved-station-onboard-cell">{totalPassengers > 0 ? totalPassengers : '—'}</span>
+                    <span className={totalPassengers > 0 ? 'saved-station-total-cell' : undefined}>{totalPassengers > 0 ? totalPassengers : '—'}</span>
                     <span>{stop.remark || '—'}</span>
                   </li>,
                 )
@@ -123,7 +127,19 @@ export function JourneyDetail({ journey, routeEntries, language, t, onExport }: 
         <button type="button" onClick={onExport}>
           {t.exportJourney}
         </button>
+        <button type="button" onClick={() => setShowExportImageModal(true)}>
+          {t.exportAsImage}
+        </button>
       </div>
+      {showExportImageModal && (
+        <ExportImageModal
+          journey={journey}
+          routeEntries={routeEntries}
+          language={language}
+          t={t}
+          onClose={() => setShowExportImageModal(false)}
+        />
+      )}
     </div>
   )
 }

@@ -176,6 +176,28 @@
 
 .saved-station-onboard-cell {
   text-align: center;
-  color: #475569;
+  color: #0855d2;
   font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.saved-station-boarding-cell {
+  text-align: center;
+  color: #10ab49;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.saved-station-alighting-cell {
+  text-align: center;
+  color: #ef4444;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.saved-station-total-cell {
+  text-align: center;
+  color: #0f172a;
+  font-size: 0.82rem;
+  font-weight: 600;
 }

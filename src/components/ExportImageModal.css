@@ -1,0 +1,197 @@
+.export-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.export-modal {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.export-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.export-modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.export-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  line-height: 1;
+}
+
+.export-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.export-modal-subtitle {
+  margin: 0 0 1.1rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.export-modal-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.export-modal-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.export-modal-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+
+.export-modal-note {
+  margin: 0 0 0.6rem;
+  font-size: 0.77rem;
+  color: #94a3b8;
+}
+
+.export-modal-section-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.export-modal-section-label-row .export-modal-section-label {
+  margin-bottom: 0;
+}
+
+.export-modal-select-all-btn {
+  font-size: 0.75rem;
+  font-family: inherit;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.export-modal-select-all-btn:hover {
+  background: #f1f5f9;
+}
+
+.export-modal-checkboxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem 0.75rem;
+}
+
+.export-modal-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #0f172a;
+  cursor: pointer;
+  user-select: none;
+}
+
+.export-modal-checkbox-label input[type='checkbox'] {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  accent-color: #4f46e5;
+  flex-shrink: 0;
+}
+
+.export-modal-checkbox-label--disabled {
+  color: #94a3b8;
+  cursor: default;
+}
+
+.export-modal-checkbox-label--disabled input[type='checkbox'] {
+  cursor: default;
+}
+
+.export-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.export-modal-btn-cancel {
+  padding: 0.4rem 1rem;
+  font-size: 0.82rem;
+  font-family: inherit;
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+}
+
+.export-modal-btn-cancel:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.export-modal-btn-export {
+  padding: 0.4rem 1rem;
+  font-size: 0.82rem;
+  font-family: inherit;
+  border-radius: 0.375rem;
+  border: 1px solid #4338ca;
+  background: #4338ca;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.export-modal-btn-export:hover:not(:disabled) {
+  background: #3730a3;
+}
+
+.export-modal-btn-export:disabled,
+.export-modal-btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Positions the html2canvas capture target out of viewport */
+.export-offscreen-container {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  pointer-events: none;
+  z-index: -1;
+}

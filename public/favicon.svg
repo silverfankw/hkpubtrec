@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="12" fill="#4f46e5"/>
+  <!-- Bus body -->
+  <rect x="5" y="13" width="54" height="27" rx="5" fill="white"/>
+  <!-- Windows -->
+  <rect x="8" y="17" width="19" height="12" rx="2" fill="#4f46e5"/>
+  <rect x="33" y="17" width="19" height="12" rx="2" fill="#4f46e5"/>
+  <!-- Floor line -->
+  <rect x="5" y="37" width="54" height="2.5" rx="0" fill="#818cf8" opacity="0.45"/>
+  <!-- Left wheel -->
+  <circle cx="16" cy="51" r="7.5" fill="white"/>
+  <circle cx="16" cy="51" r="3.5" fill="#3730a3"/>
+  <!-- Right wheel -->
+  <circle cx="48" cy="51" r="7.5" fill="white"/>
+  <circle cx="48" cy="51" r="3.5" fill="#3730a3"/>
+</svg>

@@ -100,9 +100,8 @@
 
 .route-list-company {
   min-width: 76px;
-  flex-shrink: 0;
-  font-weight: 600;
-  padding: 0.3rem 0.3rem;
+  font-weight: 500;
+  padding: 0.2rem 0.3rem;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   background-color: #f8fafc;

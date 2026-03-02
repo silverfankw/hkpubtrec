@@ -284,6 +284,12 @@
   color: #64748b;
 }
 
+.station-list--locked .station-list-item--selected .station-order,
+.station-list--locked .station-list-item--tap-start .station-order {
+  color: #0f172a;
+  font-weight: 600;
+}
+
 .station-name {
   min-width: 0;
   color: #111827;

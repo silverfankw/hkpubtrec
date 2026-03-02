@@ -5,16 +5,34 @@ import './AppHeader.css'
 type Props = {
   language: Language
   onLanguageChange: (lang: Language) => void
+  activeTab: 'record' | 'saved'
+  onTabChange: (tab: 'record' | 'saved') => void
   t: TranslationKeys
 }
 
-export function AppHeader({ language, onLanguageChange, t }: Props) {
+export function AppHeader({ language, onLanguageChange, activeTab, onTabChange, t }: Props) {
   return (
     <header className="app-header">
-      <div>
-        <h1 className="app-title">{t.appTitle}</h1>
-        <p className="app-subtitle">{t.appSubtitle}</p>
-      </div>
+      <nav className="app-tabs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'record'}
+          className={`app-tab ${activeTab === 'record' ? 'app-tab--active' : ''}`}
+          onClick={() => onTabChange('record')}
+        >
+          {t.tabRecord}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'saved'}
+          className={`app-tab ${activeTab === 'saved' ? 'app-tab--active' : ''}`}
+          onClick={() => onTabChange('saved')}
+        >
+          {t.tabSavedJourneys}
+        </button>
+      </nav>
       <div className="header-actions">
         <div className="language-toggle">
           <button

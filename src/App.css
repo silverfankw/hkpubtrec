@@ -36,8 +36,6 @@
 .app-tabs {
   display: flex;
   gap: 0.25rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 .app-tab {
@@ -47,7 +45,6 @@
   font-family: inherit;
   border: none;
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
   background: transparent;
   color: #64748b;
   cursor: pointer;
@@ -246,6 +243,14 @@
   color: #94a3b8;
 }
 
+.stop-order-prefix {
+  font-size: 0.75em;
+  color: #4f46e5;
+  font-weight: 500;
+  vertical-align: super;
+  margin-right: 0.3em;
+}
+
 @media (max-width: 960px) {
   .app {
     padding-inline: 1.1rem;
@@ -257,6 +262,19 @@
 }
 
 @media (max-width: 640px) {
+  .app {
+    padding: 0.75rem 0 2.5rem;
+    background-color: #f1f5f9;
+    min-height: 100vh;
+  }
+
+  .panel {
+    margin: 0 0.6rem;
+    padding: 1rem 0.875rem 1.25rem;
+    border-radius: 0.875rem;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07);
+  }
+
   .form-grid {
     grid-template-columns: minmax(0, 1fr);
   }

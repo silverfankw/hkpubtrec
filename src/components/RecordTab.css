@@ -74,6 +74,15 @@ label#route-bound,
 
 @media (max-width: 640px) {
   .record-route-strip-bound {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .record-meta-fields .form-field {
+    font-size: 0.78rem;
+  }
+
+  .record-meta-fields .form-field input {
+    padding: 0.3rem 0.45rem;
+    font-size: 16px;
   }
 }

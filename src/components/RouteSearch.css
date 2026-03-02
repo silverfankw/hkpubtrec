@@ -102,7 +102,7 @@
   min-width: 76px;
   flex-shrink: 0;
   font-weight: 600;
-  padding: 0.1rem 0.3rem;
+  padding: 0.3rem 0.3rem;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   background-color: #f8fafc;
@@ -136,7 +136,7 @@
   min-width: 50px;
   font-weight: 700;
   color: #111827;
-  padding: 0.3rem 0.45rem;
+  padding: 0.15rem 0.45rem;
   border-radius: 0.1rem;
   display: flex;
   align-items: center;
@@ -330,7 +330,7 @@
   .route-list-item .route-list-dest {
     flex: 0 1 auto;
     min-width: 0;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: #475569;
   }
 

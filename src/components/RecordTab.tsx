@@ -22,6 +22,28 @@ import { StationList } from './StationList'
 import { ConfirmDialog } from './ConfirmDialog'
 import './RecordTab.css'
 
+function formatDateDisplayValue(digits: string): string {
+  if (digits.length <= 4) return digits
+  if (digits.length <= 6) return `${digits.slice(0, 4)}/${digits.slice(4)}`
+  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`
+}
+
+function parseDateInput(input: string): string | null {
+  const match = input.match(/^(\d{4})\/(\d{2})\/(\d{2})$/)
+  if (!match) return null
+  const [, year, month, day] = match
+  const y = parseInt(year, 10)
+  const m = parseInt(month, 10)
+  const d = parseInt(day, 10)
+  if (m < 1 || m > 12 || d < 1 || d > 31) return null
+  const date = new Date(y, m - 1, d)
+  if (date.getFullYear() !== y || date.getMonth() + 1 !== m || date.getDate() !== d) return null
+  const today = new Date()
+  today.setHours(23, 59, 59, 999)
+  if (date > today) return null
+  return `${year}/${month}/${day}`
+}
+
 type Props = {
   etaDb: EtaDb | null
   routeMap: RouteBoundMap
@@ -48,6 +70,14 @@ export function RecordTab({
   onSwitchToSaved,
 }: Props) {
   const [form, setForm] = useState<JourneyFormState>(() => createEmptyFormState())
+  const [dateInput, setDateInput] = useState(() => getLocalDateString())
+  const dateInputError = (() => {
+    const digits = dateInput.replace(/\D/g, '')
+    if (digits.length === 0) return null
+    if (digits.length < 8) return t.validationDateFormat
+    if (!parseDateInput(dateInput)) return t.validationDateFormat
+    return null
+  })()
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null)
   const [routeBoundSectionExpanded, setRouteBoundSectionExpanded] = useState(true)
   const [stationStopData, setStationStopData] = useState<Record<string, StopInputData>>({})
@@ -68,6 +98,7 @@ export function RecordTab({
 
   const resetRecordTabState = () => {
     setForm(createEmptyFormState())
+    setDateInput(getLocalDateString())
     setSelectedRouteId(null)
     setJourneySelection(null)
     setStationStopData({})
@@ -171,7 +202,7 @@ export function RecordTab({
       !journeySelection ||
       journeySelection.routeId !== selectedRouteId
     ) {
-      return { fromStop: '', toStop: '' }
+      return { fromStop: '', toStop: '', fromOrder: undefined, toOrder: undefined }
     }
 
     const start = Math.min(journeySelection.startOrder, journeySelection.endOrder)
@@ -182,6 +213,8 @@ export function RecordTab({
     return {
       fromStop: fromStop?.name ?? '',
       toStop: toStop?.name ?? '',
+      fromOrder: fromStop?.order,
+      toOrder: toStop?.order,
     }
   }, [journeySelection, selectedRouteId, selectedRouteStops])
 
@@ -264,6 +297,11 @@ export function RecordTab({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (dateInputError) {
+      window.alert(t.validationDateFormat)
+      return
+    }
 
     const trimmedRoute = selectedRouteLabel.trim()
     const trimmedBound = selectedBoundLabel.trim()
@@ -413,11 +451,21 @@ export function RecordTab({
               <label htmlFor="date">{t.dateLabel}</label>
               <input
                 id="date"
-                type="date"
-                value={form.date}
-                max={getLocalDateString()}
-                onChange={(event) => updateForm('date', event.target.value)}
+                type="text"
+                inputMode="numeric"
+                placeholder="YYYYMMDD"
+                value={dateInput}
+                maxLength={10}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 8)
+                  const formatted = formatDateDisplayValue(digits)
+                  setDateInput(formatted)
+                  updateForm('date', digits.length === 8 ? (parseDateInput(formatted) ?? '') : '')
+                }}
               />
+              {dateInputError && (
+                <p className="helper-text helper-text-error">{dateInputError}</p>
+              )}
             </div>
 
             <div className="form-field">
@@ -535,12 +583,26 @@ export function RecordTab({
                   <div className="form-field">
                     <label htmlFor="fromStop">{t.fromStopLabel}</label>
                     <div id="fromStop" className="form-field-text">
+                      {selectedStopRange.fromOrder != null && (
+                        <span className="stop-order-prefix">
+                          {language === 'zh-HK'
+                            ? `第${selectedStopRange.fromOrder}個站  `
+                            : `${selectedStopRange.fromOrder}${selectedStopRange.fromOrder === 1 ? 'st' : selectedStopRange.fromOrder === 2 ? 'nd' : selectedStopRange.fromOrder === 3 ? 'rd' : 'th'} stop  `}
+                        </span>
+                      )}
                       {selectedStopRange.fromStop || '—'}
                     </div>
                   </div>
                   <div className="form-field">
                     <label htmlFor="toStop">{t.toStopLabel}</label>
                     <div id="toStop" className="form-field-text">
+                      {selectedStopRange.toOrder != null && (
+                        <span className="stop-order-prefix">
+                          {language === 'zh-HK'
+                            ? `第${selectedStopRange.toOrder}個站  `
+                            : `${selectedStopRange.toOrder}${selectedStopRange.toOrder === 1 ? 'st' : selectedStopRange.toOrder === 2 ? 'nd' : selectedStopRange.toOrder === 3 ? 'rd' : 'th'} stop  `}
+                        </span>
+                      )}
                       {selectedStopRange.toStop || '—'}
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { JourneySelection, StopInputData } from '../types'
 import type { TranslationKeys } from '../constants/translations'
 import type { SelectionPhase } from '../hooks/useStationDrag'
@@ -111,6 +111,7 @@ export function StationList({
 }: Props) {
   const [editingStopKey, setEditingStopKey] = useState<string | null>(null)
   const [rawInput, setRawInput] = useState('')
+  const skipBlurRef = useRef(false)
 
   const sel = journeySelection?.routeId === selectedRouteId ? journeySelection : null
   const start = sel ? Math.min(sel.startOrder, sel.endOrder) : 0
@@ -154,7 +155,7 @@ export function StationList({
           </button>
         </div>
       </div>
-      <ul key={selectedRouteId} className={`station-list station-list--selectable${stops.length === 0 ? ' station-list--empty' : ''}`}>
+      <ul key={selectedRouteId} className={`station-list station-list--selectable${stops.length === 0 ? ' station-list--empty' : ''}${dragSelectionLocked ? ' station-list--locked' : ''}`}>
         <li className="station-list-header">
           <div className="station-row-main">
             <span className="station-order">#</span>
@@ -257,6 +258,10 @@ export function StationList({
                       autoFocus
                       onChange={(e) => setRawInput(e.target.value)}
                       onBlur={() => {
+                        if (skipBlurRef.current) {
+                          skipBlurRef.current = false
+                          return
+                        }
                         const parsed = parseInput(rawInput)
                         onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', parsed.arrivalTime)
                         onUpdateStop(selectedRouteId, stop.order, 'aboard', parsed.aboard)
@@ -268,6 +273,28 @@ export function StationList({
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setEditingStopKey(null)
+                        }
+                        if (e.key === 'Tab') {
+                          e.preventDefault()
+                          const parsed = parseInput(rawInput)
+                          onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', parsed.arrivalTime)
+                          onUpdateStop(selectedRouteId, stop.order, 'aboard', parsed.aboard)
+                          onUpdateStop(selectedRouteId, stop.order, 'alighting', parsed.alighting)
+                          onUpdateStop(selectedRouteId, stop.order, 'remark', parsed.remark)
+                          const inRangeOrders = stops
+                            .filter((s) => s.order >= start && s.order <= end)
+                            .map((s) => s.order)
+                          const currentIdx = inRangeOrders.indexOf(stop.order)
+                          const nextOrder = inRangeOrders[currentIdx + (e.shiftKey ? -1 : 1)]
+                          if (nextOrder !== undefined) {
+                            const nextKey = `${selectedRouteId}|${nextOrder}`
+                            const nextData = stationStopData[nextKey] ?? { arrivalTime: '', aboard: '', alighting: '', remark: '' }
+                            skipBlurRef.current = true
+                            setRawInput(serializeData(nextData))
+                            setEditingStopKey(nextKey)
+                          } else {
+                            setEditingStopKey(null)
+                          }
                         }
                         e.stopPropagation()
                       }}

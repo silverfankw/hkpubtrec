@@ -33,29 +33,10 @@ function App() {
       <AppHeader
         language={language}
         onLanguageChange={setLanguage}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
         t={t}
       />
-
-      <nav className="app-tabs" role="tablist">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'record'}
-          className={`app-tab ${activeTab === 'record' ? 'app-tab--active' : ''}`}
-          onClick={() => setActiveTab('record')}
-        >
-          {t.tabRecord}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'saved'}
-          className={`app-tab ${activeTab === 'saved' ? 'app-tab--active' : ''}`}
-          onClick={() => setActiveTab('saved')}
-        >
-          {t.tabSavedJourneys}
-        </button>
-      </nav>
 
       <main className="app-layout">
         {activeTab === 'record' && (

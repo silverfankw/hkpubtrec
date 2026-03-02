@@ -4,7 +4,6 @@ export const translations: Record<
   Language,
   {
     appTitle: string
-    appSubtitle: string
     clearAll: string
     routeSearchPlaceholder: string
     noRoutesFound: string
@@ -83,11 +82,11 @@ export const translations: Record<
     importJourneys: string
     importSuccess: string
     importError: string
+    validationDateFormat: string
   }
 > = {
   'zh-HK': {
-    appTitle: '公共交通行程紀錄',
-    appSubtitle: '搜尋交通工具路線及方向，然後記錄由起點至終點的行程，包括可選時間及上落客人數。',
+    appTitle: '公共交通工具行程紀錄',
     clearAll: '刪除全部行程',
     routeSearchPlaceholder: '以路線編號搜尋，如：10 / 70K / 268X / E32A',
     noRoutesFound: '找不到相關路線，請嘗試其他關鍵字。',
@@ -166,11 +165,10 @@ export const translations: Record<
     importJourneys: '匯入行程',
     importSuccess: '已匯入 {count} 個行程，跳過 {skipped} 個重複紀錄。',
     importError: '匯入失敗，請確認檔案格式正確。',
+    validationDateFormat: '請輸入 YYYY/MM/DD 格式的有效日期，且不可超過今天。',
   },
   en: {
     appTitle: 'Public Transport Journey Record',
-    appSubtitle:
-      'Search your bus route and bound, then record journeys from starting stop to destination with optional time and passenger counts.',
     clearAll: 'Delete all journeys',
     routeSearchPlaceholder: 'Search by Route No., e.g. 10 / 70K / 268X / E32A',
     noRoutesFound: 'No routes found. Try another keyword.',
@@ -249,6 +247,7 @@ export const translations: Record<
     importJourneys: 'Import journeys',
     importSuccess: 'Imported {count} journey(s), skipped {skipped} duplicate(s).',
     importError: 'Import failed. Please check the file format.',
+    validationDateFormat: 'Please enter a valid date in YYYY/MM/DD format, not in the future.',
   },
 }
 

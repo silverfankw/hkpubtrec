@@ -5,13 +5,13 @@
 
 .clear-button {
   border-radius: 999px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 0.35rem 0.9rem;
   font-size: 0.8rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: #f8fafc;
-  color: #64748b;
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -20,9 +20,9 @@
 }
 
 .clear-button:hover {
-  background-color: #fee2e2;
-  border-color: #fecaca;
-  color: #b91c1c;
+  background-color: var(--bg-error);
+  border-color: var(--bg-error-strong);
+  color: var(--text-error-strong);
 }
 
 .clear-button:disabled {
@@ -31,7 +31,7 @@
 }
 
 .clear-button:disabled:hover {
-  background-color: #f8fafc;
-  border-color: #e2e8f0;
-  color: #64748b;
+  background-color: var(--bg-subtle);
+  border-color: var(--border);
+  color: var(--text-muted);
 }

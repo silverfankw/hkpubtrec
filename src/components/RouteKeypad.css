@@ -1,8 +1,8 @@
 .route-keypad {
   padding: 0.5rem;
-  background: #f1f5f9;
+  background: var(--bg-app);
   border-radius: 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   margin-top: 0.4rem;
 }
 
@@ -15,11 +15,11 @@
 .route-keypad-btn {
   height: 2.75rem;
   border-radius: 0.5rem;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
   font-size: 1.1rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text-primary);
   cursor: pointer;
   font-family: inherit;
   display: flex;
@@ -32,26 +32,26 @@
 }
 
 .route-keypad-btn:active:not(:disabled) {
-  background: #c7d2fe;
-  border-color: #a5b4fc;
+  background: var(--indigo-border);
+  border-color: var(--indigo-border);
 }
 
 .route-keypad-btn--dim {
-  color: #cbd5e1;
-  background: #f8fafc;
-  border-color: #f1f5f9;
+  color: var(--border-input);
+  background: var(--bg-subtle);
+  border-color: var(--bg-app);
   cursor: default;
 }
 
 .route-keypad-btn--action {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--bg-app);
+  color: var(--text-secondary);
   font-size: 1rem;
-  border-color: #e2e8f0;
+  border-color: var(--border);
 }
 
 .route-keypad-btn--action:active:not(:disabled) {
-  background: #e2e8f0;
+  background: var(--border);
 }
 
 .route-keypad-btn--action:disabled {
@@ -71,13 +71,13 @@
   min-width: 2.5rem;
   max-width: 4.5rem;
   height: 2.5rem;
-  background: #e0e7ff;
-  color: #3730a3;
-  border-color: #c7d2fe;
+  background: var(--indigo-bg);
+  color: var(--indigo-dark);
+  border-color: var(--indigo-border);
   font-size: 1rem;
   font-weight: 700;
 }
 
 .route-keypad-btn--letter:active {
-  background: #c7d2fe;
+  background: var(--indigo-border);
 }

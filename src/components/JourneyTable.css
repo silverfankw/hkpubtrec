@@ -11,7 +11,7 @@
 
 .journey-table-wrapper {
   border-radius: 0.9rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   overflow: auto;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .journey-table thead {
-  background: linear-gradient(to right, #f9fafb, #eef2ff);
+  background: var(--gradient-table-header);
 }
 
 .journey-table th,
@@ -43,16 +43,16 @@
 .journey-table th {
   font-weight: 600;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
 .journey-table tbody tr:nth-child(odd) {
-  background-color: #f8fafc;
+  background-color: var(--bg-subtle);
 }
 
 .journey-table tbody tr:hover {
-  background-color: #e5edff;
+  background-color: var(--bg-highlight);
 }
 
 .journey-table-row {
@@ -60,7 +60,7 @@
 }
 
 .journey-table-row--selected {
-  background-color: #c7d2fe !important;
+  background-color: var(--indigo-border) !important;
 }
 
 .journey-table-company-route {
@@ -96,7 +96,7 @@
   padding: 0;
   font-size: 1.25rem;
   line-height: 1;
-  color: #64748b;
+  color: var(--text-muted);
   background: transparent;
   border: 1px solid transparent;
   border-radius: 0.35rem;
@@ -105,9 +105,9 @@
 }
 
 .journey-table-remove-btn:hover {
-  color: #dc2626;
-  background-color: #fef2f2;
-  border-color: #fecaca;
+  color: var(--text-error);
+  background-color: var(--bg-error);
+  border-color: var(--bg-error-strong);
 }
 
 .notes-cell {

@@ -15,8 +15,8 @@
 .language-toggle {
   display: inline-flex;
   border-radius: 999px;
-  border: 1px solid #e2e8f0;
-  background-color: #f8fafc;
+  border: 1px solid var(--border);
+  background-color: var(--bg-subtle);
   overflow: hidden;
 }
 
@@ -28,11 +28,35 @@
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .language-toggle-button--active {
-  background-color: #4f46e5;
+  background-color: var(--indigo);
+  color: #ffffff;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.theme-toggle-button {
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.theme-toggle-button--active {
+  background-color: var(--indigo);
   color: #ffffff;
 }
 

@@ -1,13 +1,99 @@
 :root {
+  /* Backgrounds */
+  --bg-app: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f8fafc;
+  --bg-input: #ffffff;
+  --bg-highlight: #eef2ff;
+  --bg-warn: #fffbeb;
+  --bg-warn-strong: #fde68a;
+  --bg-error: #fef2f2;
+  --bg-error-strong: #fecaca;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-input: #cbd5e1;
+  --border-strong: #c7d2fe;
+  --border-warn: #fbbf24;
+  --border-error: #fca5a5;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-placeholder: #94a3b8;
+  --text-warn: #d97706;
+  --text-warn-strong: #b45309;
+  --text-error: #dc2626;
+  --text-error-strong: #b91c1c;
+  --text-success: #15803d;
+  --text-info: #1e40af;
+
+  /* Brand (indigo) */
+  --indigo: #4f46e5;
+  --indigo-hover: #4338ca;
+  --indigo-dark: #3730a3;
+  --indigo-light: #6366f1;
+  --indigo-bg: #eef2ff;
+  --indigo-border: #c7d2fe;
+
+  /* Shadows */
+  --shadow-panel: 0 2px 8px rgba(15, 23, 42, 0.07);
+  --shadow-dialog: 0 20px 60px rgba(0, 0, 0, 0.15);
+
+  /* Gradients */
+  --gradient-app-bg: radial-gradient(circle at top left, #e5e7eb, #f9fafb);
+  --gradient-table-header: linear-gradient(to right, #f9fafb, #eef2ff);
+  --gradient-table-header-alt: linear-gradient(to right, #eff2f6, #e6e8ed);
+
   font-family: 'Noto Sans HK', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #0f172a;
-  background: radial-gradient(circle at top left, #e5e7eb, #f9fafb);
+  color: var(--text-primary);
+  background: var(--gradient-app-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode — manual override */
+:root[data-theme="dark"] {
+  --bg-app: #0a0a0a;
+  --bg-surface: #111111;
+  --bg-subtle: #0f0f0f;
+  --bg-input: #1a1a1a;
+  --bg-highlight: #14122a;
+  --bg-warn: #1a1200;
+  --bg-warn-strong: #3d2800;
+  --bg-error: #1a0808;
+  --bg-error-strong: #3d1010;
+  --border: #2a2a2a;
+  --border-input: #333333;
+  --border-strong: #2d2a7a;
+  --border-warn: #5c3a00;
+  --border-error: #5c1010;
+  --text-primary: #f0f0f0;
+  --text-secondary: #999999;
+  --text-muted: #666666;
+  --text-placeholder: #505050;
+  --text-warn: #e0a020;
+  --text-warn-strong: #f0b830;
+  --text-error: #e06060;
+  --text-error-strong: #e88080;
+  --text-success: #40c068;
+  --text-info: #6090d0;
+  --indigo: #7878f0;
+  --indigo-hover: #5a5ae0;
+  --indigo-dark: #4040c0;
+  --indigo-light: #9090f8;
+  --indigo-bg: #14122a;
+  --indigo-border: #2a286a;
+  --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.6);
+  --shadow-dialog: 0 20px 60px rgba(0, 0, 0, 0.8);
+  --gradient-app-bg: radial-gradient(circle at top left, #141414, #0a0a0a);
+  --gradient-table-header: linear-gradient(to right, #111111, #14122a);
+  --gradient-table-header-alt: linear-gradient(to right, #0f0f0f, #111111);
 }
 
 *,
@@ -24,10 +110,17 @@ body {
 
 a {
   font-weight: 500;
-  color: #4f46e5;
+  color: var(--indigo);
   text-decoration: none;
 }
 
 a:hover {
-  color: #4338ca;
+  color: var(--indigo-hover);
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+textarea,
+select {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
 }

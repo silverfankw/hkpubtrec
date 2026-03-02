@@ -37,16 +37,16 @@ label#route-bound,
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.65rem;
-  background: #f1f5f9;
+  background: var(--bg-app);
   border-radius: 0.5rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .record-route-strip-bound {
   flex: 1;
   min-width: 0;
   font-size: 1rem;
-  color: #475569;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -55,12 +55,12 @@ label#route-bound,
 .record-route-strip-edit-btn {
   flex-shrink: 0;
   padding: 0.25rem 0.6rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 0.4rem;
-  background: #ffffff;
+  background: var(--bg-surface);
   cursor: pointer;
   font-size: 0.9rem;
-  color: #475569;
+  color: var(--text-secondary);
   font-family: inherit;
   line-height: 1.4;
   touch-action: manipulation;
@@ -69,7 +69,7 @@ label#route-bound,
 }
 
 .record-route-strip-edit-btn:active {
-  background: #e2e8f0;
+  background: var(--border);
 }
 
 @media (max-width: 640px) {

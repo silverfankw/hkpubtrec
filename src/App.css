@@ -2,7 +2,7 @@
   max-width: 1120px;
   margin: 0 auto;
   padding: 1.5rem 1.5rem 3rem;
-  color: #0f172a;
+  color: var(--text-primary);
   position: relative;
 }
 
@@ -12,8 +12,8 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 0.6rem 1.25rem;
-  background-color: #0f172a;
-  color: #ffffff;
+  background-color: var(--indigo-dark);
+  color: var(--bg-surface);
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: 0.5rem;
@@ -46,18 +46,18 @@
   border: none;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: #64748b;
+  color: var(--text-muted);
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .app-tab:hover {
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .app-tab--active {
-  color: #4f46e5;
-  border-bottom-color: #4f46e5;
+  color: var(--indigo);
+  border-bottom-color: var(--indigo);
 }
 
 .app-layout {
@@ -67,23 +67,23 @@
 }
 
 .panel {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 1rem;
   padding: 1.4rem 1rem 1.5rem;
   box-shadow:
     0 14px 30px rgba(15, 23, 42, 0.08),
     0 2px 6px rgba(15, 23, 42, 0.03);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .helper-text {
   margin: 0 0 0.7rem;
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: var(--text-placeholder);
 }
 
 .helper-text-error {
-  color: #b91c1c;
+  color: var(--text-error);
 }
 
 .journey-form {
@@ -118,23 +118,23 @@
 }
 
 .form-field label {
-  color: #475569;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .form-field-text {
   font-size: 0.9rem;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .form-field input,
 .form-field textarea {
   border-radius: 0.55rem;
-  border: 1px solid #cbd5f5;
+  border: 1px solid var(--border-input);
   padding: 0.45rem 0.6rem;
   font-size: 0.9rem;
   font-family: inherit;
-  color: #0f172a;
+  color: var(--text-primary);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -143,15 +143,15 @@
 
 .form-field input::placeholder,
 .form-field textarea::placeholder {
-  color: #9ca3af;
+  color: var(--text-placeholder);
 }
 
 .form-field input:focus,
 .form-field textarea:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--indigo-light);
   box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.18);
-  background-color: #ffffff;
+  background-color: var(--bg-surface);
 }
 
 .form-field textarea {
@@ -169,12 +169,12 @@
 
 .chip {
   border-radius: 999px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   padding: 0.2rem 0.6rem;
   font-size: 0.75rem;
   text-transform: uppercase;
-  background-color: #f1f5f9;
-  color: #0f172a;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -183,8 +183,8 @@
 }
 
 .chip:hover {
-  background-color: #e0e7ff;
-  border-color: #a5b4fc;
+  background-color: var(--indigo-bg);
+  border-color: var(--indigo-border);
   transform: translateY(-1px);
 }
 
@@ -201,8 +201,8 @@
   font-size: 0.9rem;
   font-weight: 600;
   font-family: inherit;
-  background: radial-gradient(circle at top left, #6366f1, #4f46e5);
-  color: #ffffff;
+  background: radial-gradient(circle at top left, var(--indigo-light), var(--indigo));
+  color: var(--bg-surface);
   cursor: pointer;
   box-shadow:
     0 8px 18px rgba(79, 70, 229, 0.35),
@@ -231,7 +231,7 @@
 .empty-state {
   margin: 0.3rem 0.5rem;
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: var(--text-placeholder);
 }
 
 .from-stop,
@@ -240,12 +240,12 @@
 }
 
 .arrow {
-  color: #94a3b8;
+  color: var(--text-placeholder);
 }
 
 .stop-order-prefix {
   font-size: 0.75em;
-  color: #4f46e5;
+  color: var(--indigo);
   font-weight: 500;
   vertical-align: super;
   margin-right: 0.3em;
@@ -264,7 +264,7 @@
 @media (max-width: 640px) {
   .app {
     padding: 0.75rem 0 2.5rem;
-    background-color: #f1f5f9;
+    background-color: var(--bg-app);
     min-height: 100vh;
   }
 
@@ -272,7 +272,7 @@
     margin: 0 0.6rem;
     padding: 1rem 0.875rem 1.25rem;
     border-radius: 0.875rem;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07);
+    box-shadow: var(--shadow-panel);
   }
 
   .form-grid {

@@ -1,5 +1,6 @@
 import type { Language } from '../types'
 import type { TranslationKeys } from '../constants/translations'
+import type { ThemePreference } from '../hooks/useTheme'
 import './AppHeader.css'
 
 type Props = {
@@ -7,10 +8,26 @@ type Props = {
   onLanguageChange: (lang: Language) => void
   activeTab: 'record' | 'saved'
   onTabChange: (tab: 'record' | 'saved') => void
+  themePreference: ThemePreference
+  onThemeChange: (pref: ThemePreference) => void
   t: TranslationKeys
 }
 
-export function AppHeader({ language, onLanguageChange, activeTab, onTabChange, t }: Props) {
+const THEME_CYCLE: ThemePreference[] = ['light', 'dark']
+const THEME_LABELS: Record<ThemePreference, string> = {
+  light: '☀',
+  dark: '☾',
+}
+
+export function AppHeader({
+  language,
+  onLanguageChange,
+  activeTab,
+  onTabChange,
+  themePreference,
+  onThemeChange,
+  t,
+}: Props) {
   return (
     <header className="app-header">
       <nav className="app-tabs" role="tablist">
@@ -34,6 +51,19 @@ export function AppHeader({ language, onLanguageChange, activeTab, onTabChange, 
         </button>
       </nav>
       <div className="header-actions">
+        <div className="theme-toggle">
+          {THEME_CYCLE.map((pref) => (
+            <button
+              key={pref}
+              type="button"
+              className={`theme-toggle-button${themePreference === pref ? ' theme-toggle-button--active' : ''}`}
+              onClick={() => onThemeChange(pref)}
+              aria-pressed={themePreference === pref}
+            >
+              {THEME_LABELS[pref]}
+            </button>
+          ))}
+        </div>
         <div className="language-toggle">
           <button
             type="button"

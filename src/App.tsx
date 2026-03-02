@@ -3,6 +3,7 @@ import type { Language } from './types'
 import { translations } from './constants/translations'
 import { useRouteDb } from './hooks/useRouteDb'
 import { useJourneys } from './hooks/useJourneys'
+import { useTheme } from './hooks/useTheme'
 import { AppHeader } from './components/AppHeader'
 import { RecordTab } from './components/RecordTab'
 import { SavedTab } from './components/SavedTab'
@@ -16,6 +17,7 @@ function App() {
   const t = translations[language]
   const { etaDb, routeMap, routeEntries, isRouteDbLoading, routeDbError } = useRouteDb()
   const { journeys, addJourney, removeJourney, clearAll, importJourneys } = useJourneys()
+  const { preference: themePreference, setPreference: setThemePreference } = useTheme()
 
   const showNotification = () => {
     setSaveNotificationVisible(true)
@@ -35,6 +37,8 @@ function App() {
         onLanguageChange={setLanguage}
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        themePreference={themePreference}
+        onThemeChange={setThemePreference}
         t={t}
       />
 

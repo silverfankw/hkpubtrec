@@ -1,9 +1,32 @@
 .route-keypad {
+  --numgrid-width: 17.5rem;
+  --letters-width: 9rem;
   padding: 0.5rem;
   background: #f1f5f9;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   margin-top: 0.4rem;
+}
+
+.route-keypad-body {
+  display: grid;
+  grid-template-columns: var(--numgrid-width);
+  justify-content: start;
+  gap: 0.45rem;
+  align-items: stretch;
+}
+
+.route-keypad--with-letters .route-keypad-body {
+  grid-template-columns: var(--numgrid-width) minmax(0, var(--letters-width));
+}
+
+.route-keypad--no-letters .route-keypad-body {
+  grid-template-columns: var(--numgrid-width);
+}
+
+.route-keypad--no-letters .route-keypad-numgrid {
+  width: 100%;
+  justify-self: start;
 }
 
 .route-keypad-numgrid {
@@ -60,24 +83,82 @@
 }
 
 .route-keypad-letters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-top: 0.3rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 0.22rem;
+  max-height: 11.6rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.05rem;
 }
 
 .route-keypad-btn--letter {
-  flex: 1 1 2.5rem;
-  min-width: 2.5rem;
-  max-width: 4.5rem;
+  width: 100%;
+  min-width: 0;
   height: 2.5rem;
   background: #e0e7ff;
   color: #3730a3;
   border-color: #c7d2fe;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
 .route-keypad-btn--letter:active {
   background: #c7d2fe;
+}
+
+@media (max-width: 640px) {
+  .route-keypad {
+    /* --numgrid-width: min(18.8rem, calc(100vw - 1.5rem));
+    --letters-width: 14rem; */
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    margin: 0;
+    padding: 0.65rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom));
+    border-radius: 0.9rem 0.9rem 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    background: #f8fafc;
+    box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.16);
+  }
+
+  .route-keypad--with-letters .route-keypad-body {
+    grid-template-columns: var(--numgrid-width) minmax(0, var(--letters-width));
+    gap: 0.5rem;
+  }
+
+  .route-keypad--no-letters .route-keypad-numgrid {
+    width: 100%;
+  }
+
+  .route-keypad-numgrid {
+    gap: 0.45rem;
+  }
+
+  .route-keypad-btn {
+    height: 3.3rem;
+    font-size: 1.5rem;
+    border-radius: 0.62rem;
+  }
+
+  .route-keypad-btn--action {
+    font-size: 1.2rem;
+  }
+
+  .route-keypad-letters {
+    gap: 0.32rem;
+    max-height: 14.2rem;
+  }
+
+  .route-keypad-btn--letter {
+    height: 3rem;
+    min-width: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
 }

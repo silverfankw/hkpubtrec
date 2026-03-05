@@ -12,29 +12,28 @@ export function RouteBadge({ entry, language, specialLabel }: Props) {
   const primaryCompany = entry.companyCodes[0]
   const companyStyle = getCompanyChipStyle(entry.companyCodes)
   const routeStyle = getRouteStyle(primaryCompany, entry.routeType)
+  const route = entry.route
+  const isZh = language === 'zh-HK'
 
   const companyLabel =
     entry.companyCodes.length > 0
       ? entry.companyCodes
           .map((code) =>
-            language === 'zh-HK'
+            isZh
               ? COMPANY_LABELS[code] ?? code.toUpperCase()
               : code.toUpperCase(),
           )
           .join(' / ')
       : '—'
 
-  const routeDisplayLabel =
-    primaryCompany === 'mtr' && entry.route
-      ? (() => {
-          const labels = MTR_ROUTE_LABELS[entry.route.trim().toUpperCase()]
-          if (labels) {
-            const label = language === 'zh-HK' ? labels.zh : labels.en
-            return `${entry.route}  ${label}`
-          }
-          return entry.route
-        })()
-      : entry.route
+  const mtrLabel =
+    primaryCompany === 'mtr' && route
+      ? MTR_ROUTE_LABELS[route.trim().toUpperCase()]
+      : undefined
+
+  const routeDisplayLabel = mtrLabel
+    ? `${route}  ${isZh ? mtrLabel.zh : mtrLabel.en}`
+    : route
 
   const isSpecial = entry.serviceType != '1'
 

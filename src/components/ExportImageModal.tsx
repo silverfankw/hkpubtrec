@@ -107,7 +107,7 @@ export function ExportImageModal({ journey, routeEntries, language, t, onClose }
     )
   })() : <>{journey.route}</>
 
-  const summaryRows: { key: SummaryField; label: string; value: ReactNode }[] = [
+  const summaryRowsSource: { key: SummaryField; label: string; value: ReactNode }[] = [
     { key: 'date', label: t.dateLabel, value: journey.date },
     { key: 'period', label: t.periodLabel, value: periodStr },
     { key: 'route', label: t.routeLabel, value: routeNode },
@@ -124,7 +124,9 @@ export function ExportImageModal({ journey, routeEntries, language, t, onClose }
     },
     { key: 'vehiclePlate', label: t.vehiclePlateLabel, value: journey.vehiclePlate ?? '—' },
     { key: 'notes', label: cleanLabel(t.notesLabel), value: journey.notes ?? '—' },
-  ].filter(r => {
+  ]
+
+  const summaryRows = summaryRowsSource.filter(r => {
     const def = SUMMARY_FIELD_DEFS.find(f => f.key === r.key)
     return def?.mandatory || summaryOn[r.key]
   })
@@ -266,7 +268,7 @@ export function ExportImageModal({ journey, routeEntries, language, t, onClose }
             }}
           >
             <div style={{ fontWeight: 700, fontSize: '18px', letterSpacing: '0.01em' }}>
-              {journey.route}　{journey.bound}
+              {journey.route} {journey.bound}
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '13px', opacity: 0.88 }}>{journey.date}</div>

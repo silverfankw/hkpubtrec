@@ -280,12 +280,21 @@
 }
 
 @media (max-width: 640px) {
+  .route-search--keypad-open {
+    padding-bottom: calc(16.5rem + env(safe-area-inset-bottom));
+  }
+
   #routeSearch {
     font-size: 16px;
   }
 
   .route-search-input--mobile {
     cursor: pointer;
+  }
+
+  .route-list {
+    max-height: none;
+    overflow: visible;
   }
 
   .route-list-items {
@@ -297,8 +306,8 @@
   .route-list-item {
     display: grid;
     grid-template-columns: auto auto 1fr;
-    gap: 0.15rem 0.5rem;
-    padding: 0.4rem 0.55rem;
+    gap: 0.15rem 0.75rem;
+    padding: 0.4rem 0.5rem;
     font-size: 0.9rem;
     align-items: center;
   }
@@ -312,6 +321,7 @@
     grid-column: 2;
     grid-row: 1;
     gap: 0.25rem;
+    margin-left: -0.2rem;
   }
 
   .route-list-item .route-list-od-group {
@@ -329,7 +339,7 @@
   .route-list-item .route-list-dest {
     flex: 0 1 auto;
     min-width: 0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #475569;
   }
 
@@ -344,9 +354,11 @@
   }
 
   .route-list-number {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     padding: 0.2rem 0.35rem;
-    min-width: 38px;
+    width: 3rem;
+    min-width: 3rem;
+    font-variant-numeric: tabular-nums;
   }
 
   .route-list-number-wrap {

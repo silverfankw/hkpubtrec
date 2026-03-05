@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { JourneySelection, StopInputData } from '../types'
 import type { TranslationKeys } from '../constants/translations'
 import type { SelectionPhase } from '../hooks/useStationDrag'
@@ -67,6 +67,13 @@ function parseInput(raw: string): StopInputData {
 
 type StopInfo = { id: string; order: number; name: string }
 
+const EMPTY_STOP_DATA: StopInputData = {
+  arrivalTime: '',
+  aboard: '',
+  alighting: '',
+  remark: '',
+}
+
 type Props = {
   selectedRouteId: string
   stops: StopInfo[]
@@ -112,6 +119,8 @@ export function StationList({
   const [editingStopKey, setEditingStopKey] = useState<string | null>(null)
   const [rawInput, setRawInput] = useState('')
   const skipBlurRef = useRef(false)
+  const hintRef = useRef<HTMLParagraphElement | null>(null)
+  const prevSelectionPhaseRef = useRef<SelectionPhase>(selectionPhase)
 
   const sel = journeySelection?.routeId === selectedRouteId ? journeySelection : null
   const start = sel ? Math.min(sel.startOrder, sel.endOrder) : 0
@@ -127,10 +136,25 @@ export function StationList({
         : t.journeyDragHint
   const showHighlight = !sel || isAwaitingEnd || (!!sel && !dragSelectionLocked)
 
+  useEffect(() => {
+    const wasAwaitingEnd = prevSelectionPhaseRef.current === 'awaiting-end'
+    prevSelectionPhaseRef.current = selectionPhase
+
+    if (!wasAwaitingEnd || selectionPhase !== 'idle' || !sel) return
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 640px)').matches) return
+
+    hintRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
+    })
+  }, [selectionPhase, sel])
+
   return (
     <>
       <div className="station-list-actions">
         <p
+          ref={hintRef}
           className={`helper-text station-select-range-hint ${
             showHighlight ? 'station-select-range-hint--highlight' : ''
           }`}
@@ -179,12 +203,7 @@ export function StationList({
           const canEditInputs = isInRange && dragSelectionLocked
 
           const dataKey = `${selectedRouteId}|${stop.order}`
-          const data = stationStopData[dataKey] ?? {
-            arrivalTime: '',
-            aboard: '',
-            alighting: '',
-            remark: '',
-          }
+          const data = stationStopData[dataKey] ?? EMPTY_STOP_DATA
 
           const hasTimeWarning = !crossMidnight && timeWarnings.has(stop.order)
 
@@ -219,7 +238,7 @@ export function StationList({
           rows.push(
             <li
               key={`${selectedRouteId}|${stop.order}`}
-              className={`station-list-item ${isTapStart ? 'station-list-item--tap-start' : isInRange ? 'station-list-item--selected' : sel ? 'station-list-item--disabled' : ''}`}
+              className={`station-list-item ${isTapStart ? 'station-list-item--tap-start' : isInRange ? 'station-list-item--selected' : sel ? 'station-list-item--disabled' : ''}${isEditing ? ' station-list-item--editing' : ''}`}
               data-order={stop.order}
               data-route-id={selectedRouteId}
               onMouseDown={(e) => {
@@ -254,7 +273,7 @@ export function StationList({
                       style={{ gridColumn: '3 / -1' }}
                       value={rawInput}
                       placeholder="HHMM+aboard-alighting/remark"
-                      // eslint-disable-next-line jsx-a11y/no-autofocus
+                      enterKeyHint="next"
                       autoFocus
                       onChange={(e) => setRawInput(e.target.value)}
                       onBlur={() => {
@@ -274,7 +293,7 @@ export function StationList({
                         if (e.key === 'Escape') {
                           setEditingStopKey(null)
                         }
-                        if (e.key === 'Tab') {
+                        if (e.key === 'Tab' || e.key === 'Enter') {
                           e.preventDefault()
                           const parsed = parseInput(rawInput)
                           onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', parsed.arrivalTime)
@@ -285,10 +304,11 @@ export function StationList({
                             .filter((s) => s.order >= start && s.order <= end)
                             .map((s) => s.order)
                           const currentIdx = inRangeOrders.indexOf(stop.order)
-                          const nextOrder = inRangeOrders[currentIdx + (e.shiftKey ? -1 : 1)]
+                          const step = e.key === 'Tab' && e.shiftKey ? -1 : 1
+                          const nextOrder = inRangeOrders[currentIdx + step]
                           if (nextOrder !== undefined) {
                             const nextKey = `${selectedRouteId}|${nextOrder}`
-                            const nextData = stationStopData[nextKey] ?? { arrivalTime: '', aboard: '', alighting: '', remark: '' }
+                            const nextData = stationStopData[nextKey] ?? EMPTY_STOP_DATA
                             skipBlurRef.current = true
                             setRawInput(serializeData(nextData))
                             setEditingStopKey(nextKey)

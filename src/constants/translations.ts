@@ -108,7 +108,7 @@ export const translations: Record<
     saveJourney: '儲存行程',
     filterByRoute: '以路線篩選',
     filterRoutePlaceholder: '搜尋路線',
-    noJourneys: '暫未有行程紀錄，可在右方新增第一個紀錄。',
+    noJourneys: '未有行程紀錄。',
     routesLoading: '正在載入香港官方巴士路線資料…',
     routesError: '未能載入官方路線列表，你仍然可以手動輸入路線及方向。',
     validationMissingFields: '請填寫路線、方向、上車站及落車站。',

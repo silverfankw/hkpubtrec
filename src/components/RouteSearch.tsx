@@ -15,7 +15,6 @@ type Props = {
   error: string | null
 }
 
-
 export function RouteSearch({
   routeEntries,
   selectedRouteId,
@@ -93,7 +92,7 @@ export function RouteSearch({
       {error && <p className="helper-text helper-text-error">{t.routesError}</p>}
 
       <div className="route-search-details">
-        <div className="route-search">
+        <div className={`route-search${isMobile && keypadVisible ? ' route-search--keypad-open' : ''}`}>
           <div className="form-field">
             <div className="route-search-input-wrap">
               <input
@@ -102,15 +101,18 @@ export function RouteSearch({
                 placeholder={t.routeSearchPlaceholder}
                 value={routeSearch}
                 readOnly={isMobile}
-                onChange={(event) => { if (!isMobile) setRouteSearch(event.target.value) }}
-                onClick={() => { if (isMobile) setKeypadVisible((v) => !v) }}
+                onChange={(event) => !isMobile && setRouteSearch(event.target.value)}
+                onClick={() => isMobile && setKeypadVisible((v) => !v)}
                 className={isMobile ? 'route-search-input--mobile' : ''}
               />
               {routeSearch && (
                 <button
                   type="button"
                   className="route-search-clear-btn"
-                  onClick={() => { setRouteSearch(''); setKeypadVisible(false) }}
+                  onClick={() => {
+                    setRouteSearch('')
+                    setKeypadVisible(false)
+                  }}
                   aria-label="Clear search"
                 >
                   ×
@@ -134,7 +136,7 @@ export function RouteSearch({
               <p className="empty-state">{t.noRoutesFound}</p>
             ) : (
               <ul className="route-list-items">
-                {filteredRouteEntries.map((entry: RouteListEntry) => {
+                {filteredRouteEntries.map((entry) => {
                   const originLabel = language === 'zh-HK' ? entry.origZh : entry.origEn
                   const destLabel = language === 'zh-HK' ? entry.destZh : entry.destEn
 

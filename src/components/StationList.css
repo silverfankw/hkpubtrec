@@ -231,6 +231,36 @@
   animation: tap-start-pulse 1.5s ease-in-out infinite;
 }
 
+.station-list-item--editing {
+  background-color: #dcfce7 !important;
+  box-shadow:
+    inset 0 0 0 2px #16a34a,
+    0 0 0 1px rgba(22, 163, 74, 0.2),
+    0 0 10px rgba(22, 163, 74, 0.3);
+  animation: station-editing-glow 1.4s ease-in-out infinite;
+}
+
+.station-list-item--editing .station-name,
+.station-list-item--editing .station-order {
+  color: #14532d;
+}
+
+@keyframes station-editing-glow {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 0 2px #16a34a,
+      0 0 0 1px rgba(22, 163, 74, 0.2),
+      0 0 8px rgba(22, 163, 74, 0.22);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 2px #15803d,
+      0 0 0 1px rgba(21, 128, 61, 0.28),
+      0 0 14px rgba(21, 128, 61, 0.38);
+  }
+}
+
 @keyframes tap-start-pulse {
   0%,
   100% {
@@ -490,8 +520,39 @@
 }
 
 @media (max-width: 640px) {
+  .station-select-range-hint {
+    padding: 0.05rem 0.15rem;
+    font-size: 0.82rem;
+    line-height: 1.2;
+    margin: 0 0 0.02rem;
+    scroll-margin-top: calc(var(--mobile-route-strip-height, 2.7rem) + 1rem);
+  }
+
+  .station-list-actions {
+    position: sticky;
+    top: calc(var(--mobile-route-strip-height, 2.7rem) + var(--mobile-sticky-gap, 0.12rem));
+    z-index: 29;
+    gap: 0.12rem;
+    padding: 0.02rem 0 0.04rem;
+    background-color: #ffffff;
+  }
+
+  .station-select-buttons {
+    position: static;
+    gap: 0.4rem;
+  }
+
+  .station-select-btn {
+    padding: 0.32rem 0.68rem;
+    font-size: 0.82rem;
+  }
+
   .station-list {
     -webkit-overflow-scrolling: touch;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    resize: none;
   }
 
   .station-list-header {
@@ -502,7 +563,7 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding: 0.35rem 0.5rem;
+    padding: 0.48rem 0.55rem;
     border-bottom: 1px solid #e2e8f0;
     min-width: 0;
   }
@@ -512,7 +573,7 @@
     flex-wrap: wrap;
     align-items: center;
     column-gap: 0.4rem;
-    row-gap: 0.2rem;
+    row-gap: 0.25rem;
     width: 100%;
   }
 
@@ -537,9 +598,9 @@
   .station-row-data {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.25rem;
     width: 100%;
-    margin-top: 0.3rem;
+    margin-top: 0.25rem;
     padding-left: 2.15rem;
   }
 
@@ -549,7 +610,7 @@
 
   .station-pax-row {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
 
   .station-pax-row .station-field-row {
@@ -562,7 +623,8 @@
   }
 
   .station-name {
-    font-size: 0.85rem;
+    font-size: 1rem;
+    line-height: 1.25;
   }
 
   .station-field-label {

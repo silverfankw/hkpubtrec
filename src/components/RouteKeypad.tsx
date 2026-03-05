@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { MouseEvent } from 'react'
 import type { RouteListEntry } from '../types'
 import './RouteKeypad.css'
 
@@ -27,73 +28,70 @@ export function RouteKeypad({ value, routeEntries, onChar, onBackspace, onClear 
   }, [value, routeEntries])
 
   const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  const hasLetters = letters.length > 0
+  const withMouseDown = (action: () => void) => (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    action()
+  }
 
   return (
-    <div className="route-keypad">
-      <div className="route-keypad-numgrid">
-        {digits.map((d) => (
-          <button
-            key={d}
-            type="button"
-            className={`route-keypad-btn${validDigits.has(d) ? '' : ' route-keypad-btn--dim'}`}
-            onMouseDown={(e) => {
-              e.preventDefault()
-              if (validDigits.has(d)) onChar(d)
-            }}
-          >
-            {d}
-          </button>
-        ))}
-        <button
-          type="button"
-          className="route-keypad-btn route-keypad-btn--action"
-          onMouseDown={(e) => {
-            e.preventDefault()
-            onClear()
-          }}
-          disabled={value.length === 0}
-        >
-          ✕
-        </button>
-        <button
-          type="button"
-          className={`route-keypad-btn${validDigits.has('0') ? '' : ' route-keypad-btn--dim'}`}
-          onMouseDown={(e) => {
-            e.preventDefault()
-            if (validDigits.has('0')) onChar('0')
-          }}
-        >
-          0
-        </button>
-        <button
-          type="button"
-          className="route-keypad-btn route-keypad-btn--action"
-          onMouseDown={(e) => {
-            e.preventDefault()
-            onBackspace()
-          }}
-          disabled={value.length === 0}
-        >
-          <span style={{ fontSize: '2em', lineHeight: 1 }}>⌫</span>
-        </button>
-      </div>
-      {letters.length > 0 && (
-        <div className="route-keypad-letters">
-          {letters.map((l) => (
+    <div className={`route-keypad${hasLetters ? ' route-keypad--with-letters' : ' route-keypad--no-letters'}`}>
+      <div className="route-keypad-body">
+        <div className="route-keypad-numgrid">
+          {digits.map((d) => (
             <button
-              key={l}
+              key={d}
               type="button"
-              className="route-keypad-btn route-keypad-btn--letter"
-              onMouseDown={(e) => {
-                e.preventDefault()
-                onChar(l)
-              }}
+              className={`route-keypad-btn${validDigits.has(d) ? '' : ' route-keypad-btn--dim'}`}
+              onMouseDown={withMouseDown(() => {
+                if (validDigits.has(d)) onChar(d)
+              })}
             >
-              {l}
+              {d}
             </button>
           ))}
+          <button
+            type="button"
+            className="route-keypad-btn route-keypad-btn--action"
+            onMouseDown={withMouseDown(onClear)}
+            disabled={value.length === 0}
+          >
+            ✕
+          </button>
+          <button
+            type="button"
+            className={`route-keypad-btn${validDigits.has('0') ? '' : ' route-keypad-btn--dim'}`}
+            onMouseDown={withMouseDown(() => {
+              if (validDigits.has('0')) onChar('0')
+            })}
+          >
+            0
+          </button>
+          <button
+            type="button"
+            className="route-keypad-btn route-keypad-btn--action"
+            onMouseDown={withMouseDown(onBackspace)}
+            disabled={value.length === 0}
+          >
+            <span style={{ fontSize: '2em', lineHeight: 1 }}>⌫</span>
+          </button>
         </div>
-      )}
+
+        {hasLetters && (
+          <div className="route-keypad-letters" role="group" aria-label="Route suffix letters">
+            {letters.map((l) => (
+              <button
+                key={l}
+                type="button"
+                className="route-keypad-btn route-keypad-btn--letter"
+                onMouseDown={withMouseDown(() => onChar(l))}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

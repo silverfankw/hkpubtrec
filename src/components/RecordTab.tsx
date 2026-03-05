@@ -86,6 +86,16 @@ export function RecordTab({
   const [crossMidnight, setCrossMidnight] = useState(false)
   const [mobileStage, setMobileStage] = useState<'search' | 'record'>('search')
 
+  const resetMobileScroll = () => {
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 640px)').matches) return
+    const appScrollContainer = document.querySelector<HTMLElement>('.app')
+    if (appScrollContainer) {
+      appScrollContainer.scrollTo({ top: 0, behavior: 'auto' })
+      return
+    }
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }
+
   const {
     journeySelection,
     setJourneySelection,
@@ -130,6 +140,7 @@ export function RecordTab({
   const handleSelectRoute = (routeId: string) => {
     setSelectedRouteId(routeId)
     setMobileStage('record')
+    resetMobileScroll()
   }
 
   useEffect(() => {
@@ -438,7 +449,10 @@ export function RecordTab({
               <button
                 type="button"
                 className="record-route-strip-edit-btn"
-                onClick={() => setMobileStage('search')}
+                onClick={() => {
+                  setMobileStage('search')
+                  resetMobileScroll()
+                }}
                 aria-label={t.changeRouteBtn}
               >
                 ✎

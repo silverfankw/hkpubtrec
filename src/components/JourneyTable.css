@@ -120,6 +120,17 @@
 @media (max-width: 640px) {
   .filters {
     flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 0.5rem;
+    align-items: stretch;
+  }
+
+  .filters .form-field {
+    width: 100%;
+  }
+
+  .journey-table-wrapper {
+    border-radius: 0.6rem;
   }
 
   .journey-table {

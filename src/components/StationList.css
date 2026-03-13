@@ -294,9 +294,6 @@
   font-size: 0.75rem;
   color: #64748b;
   border-bottom: 1px solid #e2e8f0;
-  position: sticky;
-  top: 0;
-  z-index: 1;
 }
 
 .station-list-item:nth-child(even) {
@@ -525,16 +522,12 @@
     font-size: 0.82rem;
     line-height: 1.2;
     margin: 0 0 0.02rem;
-    scroll-margin-top: calc(var(--mobile-route-strip-height, 2.7rem) + 1rem);
+    scroll-margin-top: calc(var(--mobile-route-strip-height, 2.85rem) + 0.75rem);
   }
 
   .station-list-actions {
-    position: sticky;
-    top: calc(var(--mobile-route-strip-height, 2.7rem) + var(--mobile-sticky-gap, 0.12rem));
-    z-index: 29;
     gap: 0.12rem;
     padding: 0.02rem 0 0.04rem;
-    background-color: #ffffff;
   }
 
   .station-select-buttons {
@@ -544,7 +537,7 @@
 
   .station-select-btn {
     padding: 0.32rem 0.68rem;
-    font-size: 0.82rem;
+    font-size: 0.9rem;
   }
 
   .station-list {

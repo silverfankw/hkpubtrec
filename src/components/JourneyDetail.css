@@ -111,10 +111,33 @@
 }
 
 @media (max-width: 640px) {
+  .saved-journey-detail-panel {
+    margin-top: 0.75rem;
+    padding-top: 0.65rem;
+  }
+
+  .saved-journey-summary {
+    margin-bottom: 0.75rem;
+    padding: 0.65rem;
+  }
+
   .saved-journey-summary-grid {
     grid-template-columns: auto 1fr;
     gap: 0.3rem 0.75rem;
     font-size: 0.84rem;
+  }
+
+  .saved-journey-actions {
+    gap: 0.35rem;
+  }
+
+  .saved-journey-actions button {
+    padding: 0.28rem 0.65rem;
+    font-size: 0.76rem;
+  }
+
+  .saved-journey-station-title {
+    margin: 0.85rem 0 0.45rem;
   }
 
   .saved-station-list {

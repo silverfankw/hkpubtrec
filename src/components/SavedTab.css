@@ -1,13 +1,13 @@
 .saved-tab-actions {
-    gap: 0.25rem;
-    display: flex;
+  gap: 0.35rem;
+  display: flex;
 }
 
 .clear-button {
   border-radius: 999px;
   border: 1px solid #e2e8f0;
-  padding: 0.35rem 0.9rem;
-  font-size: 0.8rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   font-family: inherit;
   background-color: #f8fafc;
@@ -34,4 +34,29 @@
   background-color: #f8fafc;
   border-color: #e2e8f0;
   color: #64748b;
+}
+
+#filterRoute {
+  font-size: 0.95rem;
+}
+
+.saved-tab-empty-state {
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .saved-tab-actions {
+    gap: 0.28rem;
+    flex-wrap: wrap;
+  }
+
+  .clear-button {
+    padding: 0.38rem 0.82rem;
+    font-size: 0.84rem;
+  }
+
+  #filterRoute,
+  .saved-tab-empty-state {
+    font-size: 16px;
+  }
 }

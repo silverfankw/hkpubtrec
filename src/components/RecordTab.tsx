@@ -88,11 +88,6 @@ export function RecordTab({
 
   const resetMobileScroll = () => {
     if (typeof window === 'undefined' || !window.matchMedia('(max-width: 640px)').matches) return
-    const appScrollContainer = document.querySelector<HTMLElement>('.app')
-    if (appScrollContainer) {
-      appScrollContainer.scrollTo({ top: 0, behavior: 'auto' })
-      return
-    }
     window.scrollTo({ top: 0, behavior: 'auto' })
   }
 

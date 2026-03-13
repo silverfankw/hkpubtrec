@@ -117,7 +117,7 @@ export function SavedTab({ journeys, routeEntries, language, t, onRemoveJourney,
       </div>
 
       {visibleJourneys.length === 0 ? (
-        <p className="empty-state">{t.noJourneys}</p>
+        <p className="empty-state saved-tab-empty-state">{t.noJourneys}</p>
       ) : (
         <>
           <JourneyTable

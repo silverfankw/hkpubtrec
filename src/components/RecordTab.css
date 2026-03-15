@@ -36,7 +36,7 @@ label#route-bound,
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.45rem 0.65rem;
+  padding: 0.45rem 0.3rem;
   background: #f1f5f9;
   border-radius: 0.5rem;
   border: 1px solid #e2e8f0;
@@ -45,7 +45,7 @@ label#route-bound,
 .record-route-strip-bound {
   flex: 1;
   min-width: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #475569;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -59,7 +59,7 @@ label#route-bound,
   border-radius: 0.4rem;
   background: #ffffff;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   color: #475569;
   font-family: inherit;
   line-height: 1.4;
@@ -95,7 +95,7 @@ label#route-bound,
   }
 
   .record-route-strip-bound {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
 
   .record-meta-fields .form-field {

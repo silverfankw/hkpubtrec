@@ -51,6 +51,15 @@
   min-width: 0;
 }
 
+.saved-journey-summary-grid .journey-stop-cell {
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  word-break: break-word;
+}
+
 .saved-journey-actions {
   display: flex;
   gap: 0.5rem;

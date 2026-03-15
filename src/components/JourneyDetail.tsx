@@ -54,9 +54,9 @@ export function JourneyDetail({ journey, routeEntries, language, t, onExport }: 
           <dt>{t.boundLabel}</dt>
           <dd>{journey.bound}</dd>
           <dt>{t.fromStopLabel}</dt>
-          <dd>{journey.fromStop ?? '—'}{fromStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(fromStopOrder)}</span> : ''}</dd>
+          <dd className="journey-stop-cell">{journey.fromStop ?? '—'}{fromStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(fromStopOrder)}</span> : ''}</dd>
           <dt>{t.toStopLabel}</dt>
-          <dd>{journey.toStop ?? '—'}{toStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(toStopOrder)}</span> : ''}</dd>
+          <dd className="journey-stop-cell">{journey.toStop ?? '—'}{toStopOrder != null ? <span className="stop-order-prefix">{formatStopOrder(toStopOrder)}</span> : ''}</dd>
           <dt>{t.vehiclePlateLabel}</dt>
           <dd>{journey.vehiclePlate ?? '—'}</dd>
           <dt>{t.notesLabel}</dt>

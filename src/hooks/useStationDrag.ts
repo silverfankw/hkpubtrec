@@ -12,6 +12,10 @@ export function useStationDrag() {
     if (dragSelectionLocked) return
 
     if (selectionPhase === 'awaiting-end') {
+      if (journeySelection?.routeId === routeId && journeySelection.startOrder === order) {
+        return
+      }
+
       setJourneySelection((prev) => {
         if (!prev || prev.routeId !== routeId) return prev
         return { ...prev, endOrder: order }

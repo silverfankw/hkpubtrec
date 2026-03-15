@@ -44,16 +44,21 @@ export function RouteSearch({
       const primary = (codes[0] ?? '').toLowerCase()
       return primary in COMPANY_ORDER ? COMPANY_ORDER[primary] : 99
     }
-    const sortByCompany = (a: RouteListEntry, b: RouteListEntry) => {
+    const sortByCompanyNumberAndService = (a: RouteListEntry, b: RouteListEntry) => {
       const rankA = companyRank(a.companyCodes)
       const rankB = companyRank(b.companyCodes)
       if (rankA !== rankB) return rankA - rankB
-      return (a.route ?? '').localeCompare(b.route ?? '', undefined, { numeric: true })
+      const routeCompare = (a.route ?? '').localeCompare(b.route ?? '', undefined, { numeric: true })
+      if (routeCompare !== 0) return routeCompare
+      const isSpecialA = a.serviceType !== '1'
+      const isSpecialB = b.serviceType !== '1'
+      if (isSpecialA !== isSpecialB) return isSpecialA ? 1 : -1
+      return a.routeId.localeCompare(b.routeId)
     }
 
     const rawTerm = routeSearch.trim()
     if (!rawTerm) {
-      return [...routeEntries].sort(sortByCompany).slice(0, 30)
+      return [...routeEntries].sort(sortByCompanyNumberAndService).slice(0, 30)
     }
 
     const termForRoute = rawTerm.normalize('NFKC')
@@ -81,7 +86,7 @@ export function RouteSearch({
         const prefixA = isRoutePrefixMatch(a)
         const prefixB = isRoutePrefixMatch(b)
         if (prefixA !== prefixB) return prefixA ? -1 : 1
-        return sortByCompany(a, b)
+        return sortByCompanyNumberAndService(a, b)
       })
       .slice(0, 80)
   }, [routeEntries, routeSearch])

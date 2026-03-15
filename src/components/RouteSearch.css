@@ -9,7 +9,7 @@
 
 .route-search-input-wrap #routeSearch {
   width: 100%;
-  padding-right: 2rem;
+  padding-right: 2.25rem;
   box-sizing: border-box;
 }
 
@@ -290,6 +290,24 @@
 
   .route-search-input--mobile {
     cursor: pointer;
+  }
+
+  .route-search-input-wrap #routeSearch {
+    padding-right: 3rem;
+  }
+
+  .route-search-clear-btn {
+    right: 0.3rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border-radius: 9999px;
+    font-size: 1.35rem;
+    color: #334155;
+  }
+
+  .route-search-clear-btn:active {
+    background-color: #e2e8f0;
   }
 
   .route-list {

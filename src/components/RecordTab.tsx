@@ -224,6 +224,11 @@ export function RecordTab({
     }
   }, [journeySelection, selectedRouteId, selectedRouteStops])
 
+  const hasDistinctStopSelection =
+    selectedStopRange.fromOrder != null &&
+    selectedStopRange.toOrder != null &&
+    selectedStopRange.fromOrder !== selectedStopRange.toOrder
+
   const journeyDuration = useMemo(() => {
     const sel = journeySelection?.routeId === selectedRouteId ? journeySelection : null
     if (!sel || !selectedRouteStops.length) return null
@@ -323,7 +328,8 @@ export function RecordTab({
       selectedRouteId &&
       journeySelection?.routeId === selectedRouteId &&
       trimmedFromStop &&
-      trimmedToStop
+      trimmedToStop &&
+      hasDistinctStopSelection
 
     if (!hasValidStopSelection) {
       window.alert(t.validationSelectStopRange)
@@ -636,7 +642,7 @@ export function RecordTab({
             <button
               type="submit"
               className="primary-button"
-              disabled={!selectedStopRange.fromStop || !selectedStopRange.toStop}
+              disabled={!selectedStopRange.fromStop || !selectedStopRange.toStop || !hasDistinctStopSelection}
             >
               {t.saveJourney}
             </button>

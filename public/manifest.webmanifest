@@ -1,23 +1,23 @@
 ﻿{
   "name": "HKPubtrec",
   "short_name": "HKPubtrec",
-  "start_url": "/",
+  "start_url": "/pubtrec/",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "/icon-192.png?v=20260316",
+      "src": "/pubtrec/icon-192.png?v=20260316",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png?v=20260316",
+      "src": "/pubtrec/icon-512.png?v=20260316",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/apple-touch-icon.png?v=20260316",
+      "src": "/pubtrec/apple-touch-icon.png?v=20260316",
       "sizes": "180x180",
       "type": "image/png"
     }

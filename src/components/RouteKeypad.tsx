@@ -77,20 +77,18 @@ export function RouteKeypad({ value, routeEntries, onChar, onBackspace, onClear 
           </button>
         </div>
 
-        {hasLetters && (
-          <div className="route-keypad-letters" role="group" aria-label="Route suffix letters">
-            {letters.map((l) => (
-              <button
-                key={l}
-                type="button"
-                className="route-keypad-btn route-keypad-btn--letter"
-                onMouseDown={withMouseDown(() => onChar(l))}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="route-keypad-letters" role="group" aria-label="Route suffix letters">
+          {letters.map((l) => (
+            <button
+              key={l}
+              type="button"
+              className="route-keypad-btn route-keypad-btn--letter"
+              onMouseDown={withMouseDown(() => onChar(l))}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )

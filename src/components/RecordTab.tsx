@@ -134,6 +134,7 @@ export function RecordTab({
 
   const handleSelectRoute = (routeId: string) => {
     setSelectedRouteId(routeId)
+    setDragSelectionLocked(false)
     setMobileStage('record')
     resetMobileScroll()
   }
@@ -497,6 +498,17 @@ export function RecordTab({
             </div>
             </div>
 
+            <div className="form-field form-field--full-width record-notes-field">
+              <label htmlFor="notes">{t.notesLabel}</label>
+              <textarea
+                id="notes"
+                rows={2}
+                placeholder={t.notesPlaceholderLabel}
+                value={form.notes}
+                onChange={(event) => updateForm('notes', event.target.value)}
+              />
+            </div>
+
             <div className="form-field form-field--full-width">
               <label id="route-bound">{t.routeAndBoundLabel}</label>
               <div className="route-form-company-route route-form-route-bound">
@@ -626,16 +638,7 @@ export function RecordTab({
               )}
             </div>
 
-            <div className="form-field form-field--full-width record-notes-field">
-              <label htmlFor="notes">{t.notesLabel}</label>
-              <textarea
-                id="notes"
-                rows={2}
-                placeholder={t.notesPlaceholderLabel}
-                value={form.notes}
-                onChange={(event) => updateForm('notes', event.target.value)}
-              />
-            </div>
+            {/* Notes field moved above, after date and plate */}
           </div>
 
           <div className="form-actions">

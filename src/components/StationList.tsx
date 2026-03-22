@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import type { JourneySelection, StopInputData } from '../types'
 import type { TranslationKeys } from '../constants/translations'
 import type { SelectionPhase } from '../hooks/useStationDrag'
@@ -46,7 +46,8 @@ function parseInput(raw: string): StopInputData {
       const hh = String(Math.min(parseInt(digits.slice(0, 2), 10), 23)).padStart(2, '0')
       arrivalTime = `${hh}:${digits[2]}`
     } else {
-      arrivalTime = String(Math.min(parseInt(digits, 10), 23)).padStart(digits.length, '0')
+      const hh = String(Math.min(parseInt(digits, 10), 23)).padStart(2, '0')
+      arrivalTime = `${hh}:00`
     }
     remaining = remaining.slice(digits.length)
   }
@@ -118,6 +119,16 @@ export function StationList({
 }: Props) {
   const [editingStopKey, setEditingStopKey] = useState<string | null>(null)
   const [rawInput, setRawInput] = useState('')
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches,
+  )
+  const [bulkText, setBulkText] = useState('')
+  const [activeBulkLine, setActiveBulkLine] = useState(-1)
+  const bulkTextareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const pendingCursorRef = useRef<number | null>(null)
+  const pendingActiveLineRef = useRef<number | null>(null)
+  const skipFocusUpdateRef = useRef(false)
+  const selectionRef = useRef<{ start: number; end: number } | null>(null)
   const skipBlurRef = useRef(false)
   const hintRef = useRef<HTMLParagraphElement | null>(null)
   const prevSelectionPhaseRef = useRef<SelectionPhase>(selectionPhase)
@@ -135,6 +146,88 @@ export function StationList({
         ? t.lockSelectionHint
         : t.journeyDragHint
   const showHighlight = !sel || isAwaitingEnd || (!!sel && !dragSelectionLocked)
+  const inRangeStops = sel ? stops.filter((s) => s.order >= start && s.order <= end) : []
+  const showBulkTextarea = isMobile && dragSelectionLocked && !!sel
+
+  // Reset bulkText when unlocking or when selection is cleared
+  useEffect(() => {
+    if (!dragSelectionLocked || !sel) {
+      setBulkText('')
+      intentionallyClearedRef.current = true
+    }
+  }, [dragSelectionLocked, sel])
+
+  const handleBulkChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const lines = e.target.value.split('\n').slice(0, inRangeStops.length)
+    const value = lines.join('\n')
+    selectionRef.current = {
+      start: e.target.selectionStart,
+      end: e.target.selectionEnd,
+    }
+    setActiveBulkLine(value.slice(0, e.target.selectionStart).split('\n').length - 1)
+    setBulkText(value)
+    inRangeStops.forEach((s, i) => {
+      const line = lines[i] ?? ''
+      const parsed = parseInput(line)
+      onUpdateStop(selectedRouteId, s.order, 'arrivalTime', parsed.arrivalTime)
+      onUpdateStop(selectedRouteId, s.order, 'aboard', parsed.aboard)
+      onUpdateStop(selectedRouteId, s.order, 'alighting', parsed.alighting)
+      onUpdateStop(selectedRouteId, s.order, 'remark', parsed.remark)
+    })
+  }
+
+
+  const updateActiveLine = (e: React.SyntheticEvent<HTMLTextAreaElement>) => {
+    if (e.type === 'focus' && skipFocusUpdateRef.current) {
+      skipFocusUpdateRef.current = false
+      return
+    }
+    const ta = e.currentTarget
+    setActiveBulkLine(ta.value.slice(0, ta.selectionStart).split('\n').length - 1)
+  }
+
+  // Apply pending cursor position after bulkText is committed to DOM
+  useLayoutEffect(() => {
+    if (pendingCursorRef.current !== null && bulkTextareaRef.current) {
+      skipFocusUpdateRef.current = true
+      bulkTextareaRef.current.focus()
+      bulkTextareaRef.current.selectionStart = pendingCursorRef.current
+      bulkTextareaRef.current.selectionEnd = pendingCursorRef.current
+      pendingCursorRef.current = null
+      if (pendingActiveLineRef.current !== null) {
+        setActiveBulkLine(pendingActiveLineRef.current)
+        pendingActiveLineRef.current = null
+      }
+    }
+  }, [bulkText])
+
+  const handleBulkKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const ta = e.currentTarget
+      const currentLineIndex = ta.value.slice(0, ta.selectionStart).split('\n').length - 1
+      if (currentLineIndex < inRangeStops.length - 1) {
+        const lines = bulkText.split('\n')
+        while (lines.length <= currentLineIndex + 1) {
+          lines.push('')
+        }
+        let pos = 0
+        for (let j = 0; j <= currentLineIndex; j++) {
+          pos += (lines[j]?.length ?? 0) + 1
+        }
+        const newBulkText = lines.join('\n')
+        setActiveBulkLine(currentLineIndex + 1)
+        if (newBulkText !== bulkText) {
+          pendingCursorRef.current = pos
+          pendingActiveLineRef.current = currentLineIndex + 1
+          setBulkText(newBulkText)
+        } else {
+          ta.selectionStart = pos
+          ta.selectionEnd = pos
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     const wasAwaitingEnd = prevSelectionPhaseRef.current === 'awaiting-end'
@@ -150,11 +243,48 @@ export function StationList({
     })
   }, [selectionPhase, sel])
 
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  // Only reset bulkText when selection changes, not while user is editing
+  const prevSelRef = useRef<{ routeId: string; start: number; end: number } | null>(null)
+  const intentionallyClearedRef = useRef(false)
+  useEffect(() => {
+    if (!showBulkTextarea) return
+    const currentSel = sel ? { routeId: sel.routeId, start: sel.startOrder, end: sel.endOrder } : null
+    const prevSel = prevSelRef.current
+    const selectionChanged =
+      !prevSel ||
+      !currentSel ||
+      prevSel.routeId !== currentSel.routeId ||
+      prevSel.start !== currentSel.start ||
+      prevSel.end !== currentSel.end
+    if (intentionallyClearedRef.current) {
+      intentionallyClearedRef.current = false
+      prevSelRef.current = currentSel
+      return
+    }
+    if (selectionChanged) {
+      const lines = inRangeStops.map((s) => {
+        const key = `${selectedRouteId}|${s.order}`
+        return serializeData(stationStopData[key] ?? EMPTY_STOP_DATA)
+      })
+      setBulkText(lines.join('\n'))
+      prevSelRef.current = currentSel
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showBulkTextarea, selectedRouteId, sel?.startOrder, sel?.endOrder])
+
   return (
     <>
       <div className="station-list-actions">
         <p
           ref={hintRef}
+          style={{ whiteSpace: 'pre-line' }}
           className={`helper-text station-select-range-hint ${
             showHighlight ? 'station-select-range-hint--highlight' : ''
           }`}
@@ -162,7 +292,7 @@ export function StationList({
           {hintText}
         </p>
         <div className="station-select-buttons">
-          <button type="button" className="station-select-btn" onClick={onSelectAll}>
+          <button type="button" className="station-select-btn" onClick={onSelectAll} disabled={dragSelectionLocked}>
             {t.selectAllStations}
           </button>
           <button type="button" className="station-select-btn" onClick={onSelectNone}>
@@ -179,7 +309,90 @@ export function StationList({
           </button>
         </div>
       </div>
-      <ul key={selectedRouteId} className={`station-list station-list--selectable${stops.length === 0 ? ' station-list--empty' : ''}${dragSelectionLocked ? ' station-list--locked' : ''}`}>
+      {showBulkTextarea && (
+        <div className="bulk-textarea-section">
+          {start > 1 && (
+            <div
+              className="station-list-item station-list-item--initial-onboard"
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <span className="station-initial-onboard-label">{t.initialOnBoardLabel}</span>
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                className="station-input station-initial-onboard-input"
+                placeholder="0"
+                title={t.initialOnBoardPlaceholder}
+                value={initialPassengersOnBoard}
+                onChange={(e) => onInitialPassengersChange(sanitizeNonNegative(e.target.value))}
+                onMouseDown={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+          <div className="bulk-textarea-wrapper" style={{ height: `${inRangeStops.length * 2.4}rem` }}>
+            <div className="bulk-stop-labels" aria-hidden="true">
+              {inRangeStops.map((s, i) => (
+                <div
+                  key={s.id}
+                  className={`bulk-stop-label${i === activeBulkLine ? ' bulk-stop-label--active' : ''}`}
+                  onClick={() => {
+                    if (bulkTextareaRef.current) {
+                      // Ensure enough lines exist for target row
+                      const lines = bulkText.split('\n')
+                      while (lines.length <= i) {
+                        lines.push('')
+                      }
+                      let pos = 0
+                      for (let j = 0; j < i; ++j) {
+                        pos += (lines[j]?.length ?? 0) + 1 // +1 for the newline
+                      }
+                      const newBulkText = lines.join('\n')
+                      if (newBulkText !== bulkText) {
+                        skipFocusUpdateRef.current = true
+                        pendingCursorRef.current = pos
+                        pendingActiveLineRef.current = i
+                        setBulkText(newBulkText)
+                      } else {
+                        skipFocusUpdateRef.current = true
+                        bulkTextareaRef.current.focus()
+                        requestAnimationFrame(() => {
+                          if (bulkTextareaRef.current) {
+                            bulkTextareaRef.current.selectionStart = pos
+                            bulkTextareaRef.current.selectionEnd = pos
+                            setActiveBulkLine(i)
+                          }
+                        })
+                      }
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <span className="bulk-stop-order">{s.order}</span>
+                  <span className="bulk-stop-name">{s.name}</span>
+                </div>
+              ))}
+            </div>
+            <textarea
+              ref={bulkTextareaRef}
+              className="bulk-data-textarea"
+              value={bulkText}
+              onChange={handleBulkChange}
+              onKeyDown={handleBulkKeyDown}
+              onKeyUp={updateActiveLine}
+              onClick={updateActiveLine}
+              onFocus={updateActiveLine}
+              onBlur={() => setActiveBulkLine(-1)}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              inputMode="text"
+              placeholder={inRangeStops.map(() => 'HHMM+上車-落車/備註').join('\n')}
+            />
+          </div>
+        </div>
+      )}
+      <ul key={selectedRouteId} className={`station-list station-list--selectable${stops.length === 0 ? ' station-list--empty' : ''}${dragSelectionLocked ? ' station-list--locked' : ''}${showBulkTextarea ? ' station-list--hidden' : ''}`}>
         <li className="station-list-header">
           <div className="station-row-main">
             <span className="station-order">#</span>
@@ -287,36 +500,6 @@ export function StationList({
                         onUpdateStop(selectedRouteId, stop.order, 'alighting', parsed.alighting)
                         onUpdateStop(selectedRouteId, stop.order, 'remark', parsed.remark)
                         setEditingStopKey(null)
-                      }}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Escape') {
-                          setEditingStopKey(null)
-                        }
-                        if (e.key === 'Tab' || e.key === 'Enter') {
-                          e.preventDefault()
-                          const parsed = parseInput(rawInput)
-                          onUpdateStop(selectedRouteId, stop.order, 'arrivalTime', parsed.arrivalTime)
-                          onUpdateStop(selectedRouteId, stop.order, 'aboard', parsed.aboard)
-                          onUpdateStop(selectedRouteId, stop.order, 'alighting', parsed.alighting)
-                          onUpdateStop(selectedRouteId, stop.order, 'remark', parsed.remark)
-                          const inRangeOrders = stops
-                            .filter((s) => s.order >= start && s.order <= end)
-                            .map((s) => s.order)
-                          const currentIdx = inRangeOrders.indexOf(stop.order)
-                          const step = e.key === 'Tab' && e.shiftKey ? -1 : 1
-                          const nextOrder = inRangeOrders[currentIdx + step]
-                          if (nextOrder !== undefined) {
-                            const nextKey = `${selectedRouteId}|${nextOrder}`
-                            const nextData = stationStopData[nextKey] ?? EMPTY_STOP_DATA
-                            skipBlurRef.current = true
-                            setRawInput(serializeData(nextData))
-                            setEditingStopKey(nextKey)
-                          } else {
-                            setEditingStopKey(null)
-                          }
-                        }
-                        e.stopPropagation()
                       }}
                     />
                   ) : (

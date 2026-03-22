@@ -153,6 +153,10 @@
   resize: none;
 }
 
+.station-list--hidden {
+  display: none !important;
+}
+
 .station-list-header,
 .station-list-item {
   display: grid;
@@ -516,6 +520,114 @@
   margin-top: 0.5rem;
 }
 
+/* ── Bulk textarea (mobile locked view) ─────────────────── */
+
+.bulk-textarea-section {
+  border: 1px solid #caced3;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.bulk-textarea-section > .station-list-item--initial-onboard {
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 0;
+}
+
+.bulk-textarea-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.bulk-stop-labels {
+  flex: 0 0 55%;
+  min-width: 0;
+  border-right: 1px solid #e2e8f0;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.bulk-stop-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0 0.5rem;
+  height: 2.4rem;
+  box-sizing: border-box;
+  border-bottom: 1px solid #f1f5f9;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+}
+
+.bulk-stop-label--active {
+  background-color: #c7d2fe;
+}
+
+.bulk-stop-label--active .bulk-stop-order {
+  color: #4338ca;
+  font-weight: 700;
+}
+
+.bulk-stop-label--active .bulk-stop-name {
+  color: #3730a3;
+  font-weight: 600;
+}
+
+.bulk-stop-label:last-child {
+  border-bottom: none;
+}
+
+.bulk-stop-order {
+  flex: 0 0 1.6rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: #9ca3af;
+  font-size: 0.78rem;
+}
+
+.bulk-stop-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.88rem;
+  color: #111827;
+}
+
+.bulk-data-textarea {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  max-height: none !important;
+  padding: 0 0.5rem;
+  border: none;
+  outline: none;
+  resize: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: 16px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  line-height: 2.4rem;
+  background: transparent;
+  color: #1e293b;
+  overflow: hidden;
+}
+
+.bulk-data-textarea:focus {
+  background: rgba(99, 102, 241, 0.02);
+}
+
+.bulk-data-textarea::placeholder {
+  color: #cbd5e1;
+}
+
+@media (max-width: 640px) {
+  .bulk-data-textarea::placeholder {
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 640px) {
   .station-select-range-hint {
     padding: 0.05rem 0.15rem;
@@ -661,4 +773,37 @@
     margin-top: 0.2rem;
     font-size: 0.85rem;
   }
+
+  .helper-text,
+  .station-select-range-hint {
+    font-size: 0.9rem !important;
+    line-height: 1.6;
+  }
+}
+
+.station-bulk-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.station-bulk-order {
+  min-width: 2.5em;
+  text-align: right;
+}
+
+.station-bulk-label {
+  cursor: pointer;
+  flex: 3;
+  min-width: 8rem;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.station-bulk-input {
+  flex: 1;
+  min-width: 5rem;
+  max-width: 14rem;
 }

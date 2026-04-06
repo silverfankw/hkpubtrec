@@ -1,6 +1,6 @@
 # A convenient tool to record public record journey in Hong Kong
 
-![Static Badge](https://img.shields.io/badge/Click%20for-Project%20Demo-blue?link=https%3A%2F%2Fsilverf.dev%2Fpubtrec)
+<a href="https://silverf.dev/pubtrec/"><img src="https://img.shields.io/badge/Click_for_Project_Demo-blue?logo=googlechrome&logoColor=white&style=for-the-badge" alt="Button" /></a>
 
 Using this tool, You can 
 1. Mark your journey starting point and destination according to your selected public transport type and route.
